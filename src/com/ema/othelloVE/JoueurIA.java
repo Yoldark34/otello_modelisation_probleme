@@ -77,6 +77,7 @@ import android.util.Log;
 	    private Coup calculCoupDebutant()
 	    {	// retourne un coup possible choisi aléatoirement
 	    	// A COMPLETER
+	    	Log.i("TAB", "message");
 	    		return (new Coup (4,2,Jeton.NOIR));
 
 	    }
