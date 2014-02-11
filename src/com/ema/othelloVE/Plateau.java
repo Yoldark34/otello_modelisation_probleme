@@ -96,7 +96,7 @@ public class Plateau {
 		int distance =0;
 		while(parcours) {
 			distance ++;
-			check  = new Coup(origine.getLigne() + coeffX, origine.getColonne() + coeffY, origine.getCouleur());
+			check  = new Coup(check.getLigne() + coeffX, check.getColonne() + coeffY, origine.getCouleur());
 			// Test si le pion est dans le plateau
 			if (check.getColonne() > 0 && check.getColonne() < NUM_LIGNES && check.getLigne() >0 && check.getLigne() < NUM_LIGNES) {
 				// Il y a quelque chose sur la case
