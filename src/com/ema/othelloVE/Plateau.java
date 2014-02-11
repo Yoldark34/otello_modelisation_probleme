@@ -57,6 +57,69 @@ public class Plateau {
 		return nb;
 	}
 
+	/**
+	 * Retourne si le coup est valide ou non
+	 * 
+	 * @param coup
+	 * @return
+	 */
+	public boolean isCoupValide(Coup coup) {
+		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					if (x != 0 && y != 0) {
+						if (parcourirDroite(coup, x, y, false))
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Retourne true si la droite autorise qu'on pose un pion
+	 * 
+	 * @param coeffX
+	 *            Coefficient directeur de la droite en X
+	 * @param coeffY
+	 *            Coefficient directeur de la droite en Y
+	 * @param renversement
+	 *            true si on veux aussi retourner
+	 * @return
+	 */
+	private boolean parcourirDroite(Coup origine, int coeffX, int coeffY, boolean renversement) {
+		boolean parcours = true;
+		Coup check = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
+		int distance =0;
+		while(parcours) {
+			distance ++;
+			check  = new Coup(origine.getLigne() + coeffX, origine.getColonne() + coeffY, origine.getCouleur());
+			// Test si le pion est dans le plateau
+			if (check.getColonne() > 0 && check.getColonne() < NUM_LIGNES && check.getLigne() >0 && check.getLigne() < NUM_LIGNES) {
+				// Il y a quelque chose sur la case
+				if (othellier[check.getLigne()][check.getColonne()] != Jeton.VIDE) {
+					// Jeton de couleur identique de l'origine
+					if (origine.getCouleur() == othellier[check.getLigne()][check.getColonne()]) {
+						// Test si la distance est plus grande que 1
+						if (distance == 1) {
+							parcours = false;
+						}
+						else {
+							return true;
+						}
+					}
+				}
+				else {
+					parcours = false;
+				}
+			}
+		}
+		return false;
+	}
+
 	// A COMPLETER
 
 }

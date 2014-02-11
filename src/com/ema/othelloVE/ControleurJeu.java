@@ -127,6 +127,14 @@ public class ControleurJeu implements Runnable {
 					MyEventMotion myEventMotion = (MyEventMotion) event;
 					if (!iaReflechi) {
 						// A COMPLETER
+						if (plateau.isCoupValide(new Coup(myEventMotion.x, myEventMotion.y,
+								joueurEnCours.getCouleur())))
+						{
+							Log.i("Coup", "Valide");
+						}
+						else {
+							Log.i("Coup", "Invalide");
+						}
 						// mettre à jour le plateau par retournement des pions
 						// exemple : mise à jour du plateau par pion joué par
 						// l'humain :
