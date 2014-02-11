@@ -6,4 +6,3 @@ public class MyEventMotion extends MyEvent {
 	int x;
 	int y;
 }
-
