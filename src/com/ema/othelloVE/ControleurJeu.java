@@ -22,12 +22,12 @@ public class ControleurJeu implements Runnable {
 	private Joueur joueur2;
 	private Joueur joueurEnCours;
 
-
 	private final String TAG = ControleurJeu.class.getSimpleName();
-	
+
 	public ControleurJeu(int level, boolean IANoir, boolean IA) {
-		// initialisation du plateau 
-		// nitialisationdes joueurs en fonction de la sélection de l'interface utilisateur
+		// initialisation du plateau
+		// nitialisationdes joueurs en fonction de la sélection de l'interface
+		// utilisateur
 		niveauIA = level;
 		isIANoir = IANoir;
 		isIA = IA;
@@ -61,7 +61,7 @@ public class ControleurJeu implements Runnable {
 		// initialisation fdu lien entre le contrôleur et l'ihm score
 		ihmScore = score;
 	}
-	
+
 	public void start() {
 		// initialisation des interfaces et affichage
 		plateau.initPlateau();
@@ -81,15 +81,16 @@ public class ControleurJeu implements Runnable {
 		niveauIA = level;
 	}
 
-	
 	private ArrayList<MyEvent> events = new ArrayList<MyEvent>();
 	private boolean iaReflechi = false;
 
 	@Override
 	public void run() {
 		// thread du contrôleur
-		// attente d' événements fournis par l'interface graphique (EventMotion) si mode de jeu manuel
-		// ou par l'automate (EventCoupIA) et par l'interface graphique (EventMotion) alternativement si mode de jeu semi-automatique
+		// attente d' événements fournis par l'interface graphique (EventMotion)
+		// si mode de jeu manuel
+		// ou par l'automate (EventCoupIA) et par l'interface graphique
+		// (EventMotion) alternativement si mode de jeu semi-automatique
 
 		Log.v(TAG, "start");
 		Coup p;
@@ -101,9 +102,9 @@ public class ControleurJeu implements Runnable {
 		updateUI();
 
 		if (joueurEnCours.isIA()) {
-			 synchronized(events) {
-			 iaReflechi = true;
-			 }
+			synchronized (events) {
+				iaReflechi = true;
+			}
 			((JoueurIA) joueurEnCours).calculCoup();
 
 		}
@@ -120,64 +121,71 @@ public class ControleurJeu implements Runnable {
 					e.printStackTrace();
 				}
 			}
-			
+
 			synchronized (events) {
-			if (event instanceof MyEventMotion) {
-				MyEventMotion myEventMotion = (MyEventMotion) event;
-				if (!iaReflechi) {
+				if (event instanceof MyEventMotion) {
+					MyEventMotion myEventMotion = (MyEventMotion) event;
+					if (!iaReflechi) {
 						// A COMPLETER
-						// vérifier si coup valide
+						if (plateau.isCoupValide(new Coup(myEventMotion.x, myEventMotion.y,
+								joueurEnCours.getCouleur())))
+						{
+							Log.i("Coup", "Valide");
+						}
+						else {
+							Log.i("Coup", "Invalide");
+						}
 						// mettre à jour le plateau par retournement des pions
-						// exemple : mise à jour du plateau par pion joué par l'humain :
+						// exemple : mise à jour du plateau par pion joué par
+						// l'humain :
 						plateau.setPlateau(myEventMotion.x, myEventMotion.y,
-							joueurEnCours.getCouleur());
+								joueurEnCours.getCouleur());
 						// faire le changement du joueur courant
 						changeJoueurEnCours();
-						
+
 						// mise à jour de l'état de l'IA
 						iaReflechi = false;
-						
+
 						// mise à jour de l'affichage
-						updateUI();					
+						updateUI();
 					}
-				}
-			else 
-				if (event instanceof MyEventCoupIA) 
-				{
+				} else if (event instanceof MyEventCoupIA) {
 					MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
 					iaReflechi = false;
-					
+
 					// A COMPLETER
 					// vérifier si coup valide
 					// mettre à jour le plateau par retournement des pions
-					// exemple : mise à jour du plateau par pion joué par l'automate :
-					plateau.setPlateau(myEventunCoup.coup.getLigne(), myEventunCoup.coup.getColonne(),
+					// exemple : mise à jour du plateau par pion joué par
+					// l'automate :
+					plateau.setPlateau(myEventunCoup.coup.getLigne(),
+							myEventunCoup.coup.getColonne(),
 							joueurEnCours.getCouleur());
-					// faire le changement du joueur courant					
+					// faire le changement du joueur courant
 					changeJoueurEnCours();
 					// mise à jour de l'affichage
 					updateUI();
-				}
-				else {
-				throw new java.lang.Error();
+				} else {
+					throw new java.lang.Error();
 				}
 
-			// verification si joueur en cours peut jouer
-			// A COMPLETER
-			// si joueur en cours est de type IA : mettre à jour iaReflechi et  lancer la demande de calcul du coup:
-			if (joueurEnCours.isIA())
-			{				 
-				 iaReflechi = true;				
-				((JoueurIA) joueurEnCours).calculCoup();
+				// verification si joueur en cours peut jouer
+				// A COMPLETER
+				// si joueur en cours est de type IA : mettre à jour iaReflechi
+				// et lancer la demande de calcul du coup:
+				if (joueurEnCours.isIA()) {
+					iaReflechi = true;
+					((JoueurIA) joueurEnCours).calculCoup();
 
+				}
+				//
 			}
-			// 
-			}
-			
-			// positionner booleen fin quand aucun des deux joueurs ne peut plus jouer.
+
+			// positionner booleen fin quand aucun des deux joueurs ne peut plus
+			// jouer.
 			// A COMPLETER
-			//fin = .... ;
-			
+			// fin = .... ;
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -187,7 +195,7 @@ public class ControleurJeu implements Runnable {
 		// fin de partie : mise à jour de l'interface score
 		updateMessageFin();
 	}
-	
+
 	protected void updateUI() {
 		// mise à jour des interfaces et affichage
 		ihmScore.setScore(plateau.nombreJetons(Jeton.BLANC),
@@ -196,13 +204,14 @@ public class ControleurJeu implements Runnable {
 		ihmPlateau.postInvalidate();
 		ihmScore.postInvalidate();
 	}
-	
+
 	private void changeJoueurEnCours()
 	// modification du joueur en cours
-	{	if (joueurEnCours == joueur1)
-				joueurEnCours = joueur2;
-			else
-				joueurEnCours = joueur1;
+	{
+		if (joueurEnCours == joueur1)
+			joueurEnCours = joueur2;
+		else
+			joueurEnCours = joueur1;
 
 	}
 
@@ -213,22 +222,23 @@ public class ControleurJeu implements Runnable {
 			events.notifyAll();
 		}
 	}
-	
-	private void updateMessageFin()
-	{	// mise à jour interface score et affichage
-		String gagnant="",msg;
-		Boolean egalite=false;
-		if (plateau.nombreJetons(Jeton.BLANC)>plateau.nombreJetons(Jeton.NOIR))
+
+	private void updateMessageFin() { // mise à jour interface score et
+										// affichage
+		String gagnant = "", msg;
+		Boolean egalite = false;
+		if (plateau.nombreJetons(Jeton.BLANC) > plateau
+				.nombreJetons(Jeton.NOIR))
 			gagnant = "BLANC";
+		else if (plateau.nombreJetons(Jeton.BLANC) < plateau
+				.nombreJetons(Jeton.NOIR))
+			gagnant = "NOIR";
 		else
-			if (plateau.nombreJetons(Jeton.BLANC)<plateau.nombreJetons(Jeton.NOIR))
-				gagnant = "NOIR";
-		else
-				egalite=true;
+			egalite = true;
 		if (egalite)
 			msg = "FIN DE LA PARTIE :  EGALITE ENTRE LES JOUEURS !";
 		else
-			msg= "FIN DE LA PARTIE : " + gagnant + " a gagné !";		
+			msg = "FIN DE LA PARTIE : " + gagnant + " a gagné !";
 
 		ihmScore.setScoreFin(msg, plateau.nombreJetons(Jeton.BLANC),
 				plateau.nombreJetons(Jeton.NOIR), joueurEnCours.getCouleur());
