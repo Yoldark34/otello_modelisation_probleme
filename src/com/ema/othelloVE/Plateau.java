@@ -1,5 +1,6 @@
 package com.ema.othelloVE;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ema.othelloVE.Jeton;
@@ -120,6 +121,24 @@ public class Plateau {
 		return false;
 	}
 
-	// A COMPLETER
+	/**
+	 * Retourne les coups possibles pour un joueur donné
+	 * @param joueurEnCours
+	 * @return
+	 */
+	public List<Coup> getMouvementPossible(Joueur joueurEnCours) {
+		List<Coup> toReturn = new ArrayList<Coup>();
+		// Parcours de toute la grille
+		for (int x=0;x<NUM_LIGNES;x++) {
+			for (int y=0;y<NUM_LIGNES;y++) {
+				Coup test = new Coup(x, y, joueurEnCours.getCouleur());
+				// Si le coup est valide on l'ajoute
+				if (isCoupValide(test)) {
+					toReturn.add(test);
+				}
+			}
+		}
+		return toReturn;
+	}
 
 }
