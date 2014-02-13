@@ -113,14 +113,17 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 			couleurAdverse = Jeton.BLANC;
 		}
 		
+		plateau.resetSurcharge();
 		for (int i = 0; i < nbCoups; i++) {
 			coupTemp = plateau.getMouvementPossible(this.getCouleur()).get(i);
 			plateau.isCoupValide(coupTemp, true, true);
+			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), this.getCouleur());
 			nbCoupsAdverse = plateau.getMouvementPossible(couleurAdverse, true).size();
 			if (nbCoupsAdverse < minCoups || minCoups == -1) {
 				minCoups = nbCoupsAdverse;
 				indexMinCoups = i;
 			}
+			plateau.resetSurcharge();
 		}
 		
 		ArrayList<Object> result= new ArrayList<Object>();
