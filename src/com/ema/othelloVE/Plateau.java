@@ -64,12 +64,13 @@ public class Plateau {
 	 * @return
 	 */
 	public boolean isCoupValide(Coup coup) {
+		boolean valide = false;
 		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					if (x != 0 || y != 0) {
-						if (parcourirDroite(coup, x, y, false))
-						{
+						valide = parcourirDroite(coup, x, y, false);
+						if (valide) {
 							return true;
 						}
 					}
@@ -77,6 +78,18 @@ public class Plateau {
 			}
 		}
 		return false;
+	}
+	
+	public void placeCoup(Coup coup) {
+		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
+			for (int x = -1; x <= 1; x++) {
+				for (int y = -1; y <= 1; y++) {
+					if (x != 0 || y != 0) {
+						parcourirDroite(coup, x, y, true);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -92,6 +105,7 @@ public class Plateau {
 	 */
 	private boolean parcourirDroite(Coup origine, int coeffX, int coeffY, boolean renversement) {
 		boolean parcours = true;
+		boolean valide = false;
 		Coup check = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
 		int distance =0;
 		while(parcours) {
@@ -110,13 +124,22 @@ public class Plateau {
 							parcours = false;
 						}
 						else {
-							return true;
+							valide = true;
+							if (renversement) {
+								Coup checkRetournement = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
+								while (check.getLigne() != checkRetournement.getLigne() || check.getColonne() != checkRetournement.getColonne()) {
+									checkRetournement  = new Coup(checkRetournement.getLigne() + coeffX, checkRetournement.getColonne() + coeffY, origine.getCouleur());
+									othellier[checkRetournement.getLigne()][checkRetournement.getColonne()] = origine.getCouleur();
+								}
+							}
 						}
 					}
+				} else {
+					parcours = false;
 				}
 			}
 		}
-		return false;
+		return valide;
 	}
 
 	// A COMPLETER
