@@ -89,21 +89,40 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	private Coup calculCoupDebutant() {
 		Random r = new Random();
 		// Coup compris entre 0 et taille de la liste de coup possibles
-		int coupAleatoire = 0 + r.nextInt(plateau.getMouvementPossible(this)
+		int coupAleatoire = 0 + r.nextInt(plateau.getMouvementPossible(this.getCouleur())
 				.size() - 0);
 
-		return (plateau.getMouvementPossible(this).get(coupAleatoire));
+		return (plateau.getMouvementPossible(this.getCouleur()).get(coupAleatoire));
 
 	}
 
-	private Coup calculCoupMoyen() { // retourne le coup qui maximise les
-										// retournements
-										// sur arbre de recherche développé à 1
-										// niveau
-										// A COMPLETER
-
-		return (new Coup(4, 2, Jeton.NOIR));
-
+	private Coup calculCoupMoyen() {
+		// retourne le coup qui maximise les
+		// retournements
+		// sur arbre de recherche développé à 1
+		// niveau
+		// A COMPLETER
+		int nbCoups = plateau.getMouvementPossible(this.getCouleur()).size();
+		int nbCoupsAdverse;
+		int minCoups = -1;
+		int indexMinCoups = -1;
+		byte couleurAdverse = Jeton.NOIR;
+		Coup coupTemp;
+		
+		if (this.getCouleur() == Jeton.NOIR) {
+			couleurAdverse = Jeton.BLANC;
+		}
+		for (int i = 0; i < nbCoups; i++) {
+			coupTemp = plateau.getMouvementPossible(this.getCouleur()).get(i);
+			plateau.isCoupValide(coupTemp, true, true);
+			nbCoupsAdverse = plateau.getMouvementPossible(couleurAdverse, true).size();
+			if (nbCoupsAdverse < minCoups || minCoups == -1) {
+				minCoups = nbCoupsAdverse;
+				indexMinCoups = i;
+			}
+		}
+		
+		return plateau.getMouvementPossible(this.getCouleur()).get(indexMinCoups);
 	}
 
 	private Coup calculCoupExpert() { // retourne le meilleur coup

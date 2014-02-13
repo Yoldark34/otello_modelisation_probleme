@@ -23,6 +23,15 @@ public class ControleurJeu implements Runnable {
 	private Joueur joueurEnCours;
 
 	private final String TAG = ControleurJeu.class.getSimpleName();
+	
+	public ControleurJeu(int level) {
+		niveauIA = level;
+		plateau = new Plateau();
+		joueur1 = new JoueurIA(Jeton.NOIR, plateau, niveauIA, this);
+		joueur2 = new JoueurIA(Jeton.BLANC, plateau, niveauIA, this);
+		joueurEnCours = joueur1;
+	}
+	
 
 	public ControleurJeu(int level, boolean IANoir, boolean IA) {
 		// initialisation du plateau
@@ -152,6 +161,10 @@ public class ControleurJeu implements Runnable {
 					}
 				} else if (event instanceof MyEventCoupIA) {
 					MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
+					if (plateau.isCoupValide(new Coup(myEventunCoup.coup.getLigne(),
+							myEventunCoup.coup.getColonne(), joueurEnCours.getCouleur()), true)) {
+						Log.i("Coup", "Valide");
+						
 					iaReflechi = false;
 
 					// A COMPLETER
@@ -166,6 +179,9 @@ public class ControleurJeu implements Runnable {
 					changeJoueurEnCours();
 					// mise à jour de l'affichage
 					updateUI();
+					} else {
+						Log.i("Coup", "Invalide");
+					}
 				} else {
 					throw new java.lang.Error();
 				}
