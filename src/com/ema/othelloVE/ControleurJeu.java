@@ -126,10 +126,8 @@ public class ControleurJeu implements Runnable {
 				if (event instanceof MyEventMotion) {
 					MyEventMotion myEventMotion = (MyEventMotion) event;
 					if (plateau.isCoupValide(new Coup(myEventMotion.x,
-							myEventMotion.y, joueurEnCours.getCouleur()))) {
+							myEventMotion.y, joueurEnCours.getCouleur()), true)) {
 						Log.i("Coup", "Valide");
-						plateau.placeCoup(new Coup(myEventMotion.x,
-								myEventMotion.y, joueurEnCours.getCouleur()));
 
 						if (!iaReflechi) {
 							// A COMPLETER

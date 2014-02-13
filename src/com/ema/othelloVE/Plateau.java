@@ -64,13 +64,13 @@ public class Plateau {
 	 * @param coup
 	 * @return
 	 */
-	public boolean isCoupValide(Coup coup) {
+	public boolean isCoupValide(Coup coup, boolean retourner) {
 		boolean valide = false;
 		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					if (x != 0 || y != 0) {
-						valide = parcourirDroite(coup, x, y, false);
+						valide = parcourirDroite(coup, x, y, retourner);
 						if (valide) {
 							return true;
 						}
@@ -79,18 +79,6 @@ public class Plateau {
 			}
 		}
 		return false;
-	}
-	
-	public void placeCoup(Coup coup) {
-		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					if (x != 0 || y != 0) {
-						parcourirDroite(coup, x, y, true);
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -155,7 +143,7 @@ public class Plateau {
 			for (int y=0;y<NUM_LIGNES;y++) {
 				Coup test = new Coup(x, y, joueurEnCours.getCouleur());
 				// Si le coup est valide on l'ajoute
-				if (isCoupValide(test)) {
+				if (isCoupValide(test, false)) {
 					toReturn.add(test);
 				}
 			}
