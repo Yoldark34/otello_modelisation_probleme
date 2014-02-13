@@ -88,7 +88,7 @@ public class IhmPlateau extends View {
 	}
 
 		
-	protected void afficheJetons(Canvas aCanvas) {
+	protected void afficheJetons(Canvas aCanvas) { 
 		Log.v(this.toString(), "drawButtons");
 		int x, y; // coordonnées affichage
 		
@@ -97,11 +97,15 @@ public class IhmPlateau extends View {
 			for (int i = 0; i < NB_COL; i++) {
 				for (int j = 0; j < NB_LIG; j++) {
 					byte jeton = othellier.getJeton(i, j);
+					byte couleurJoueurEnCours = controleur.getCurrentPlayer().couleur;
 					aCanvas.drawText(j+","+i, (i * tailleGrille) + tailleGrille / 2, (j * tailleGrille) + tailleGrille / 2, new Paint(Color.BLACK));
 					if( (jeton != Jeton.VIDE) || (lastCoup!=null && lastCoup.getLigne()== i && lastCoup.getColonne()==j)){
 						x = (i * tailleGrille) + tailleGrille / 2;
 						y = (j * tailleGrille) + tailleGrille / 2;
-						afficheJeton(aCanvas, x, y, jeton);
+						afficheJeton(aCanvas, x, y, jeton, true);
+					}
+					else if (jeton == Jeton.VIDE && othellier.isCoupValide(new Coup(i,j,couleurJoueurEnCours), false)) {
+						afficheJeton(aCanvas, (i * tailleGrille) + tailleGrille / 2, (j * tailleGrille) + tailleGrille / 2, couleurJoueurEnCours, false);
 					}
 				}
 			}
@@ -109,7 +113,7 @@ public class IhmPlateau extends View {
 		Log.v(this.toString(), "drawButtons <<");
 	}
 
-	protected void afficheJeton(Canvas aCanvas, int aX, int aY, byte aColor) {
+	protected void afficheJeton(Canvas aCanvas, int aX, int aY, byte aColor, boolean filled) {
 		Log.v(this.toString(), "drawButton");
 		Paint paint = new Paint();
 
@@ -120,6 +124,10 @@ public class IhmPlateau extends View {
 		} else if (aColor == Jeton.VIDE) {
 			 paint.setColor(Color.GREEN);
 		 }
+		if(!filled) {
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeWidth(2);
+		} 
 		aCanvas.drawCircle(aX, aY, tailleJeton, paint);
 	}
 

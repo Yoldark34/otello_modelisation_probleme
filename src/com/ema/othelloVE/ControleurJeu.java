@@ -247,4 +247,8 @@ public class ControleurJeu implements Runnable {
 
 	}
 
+	public Joueur getCurrentPlayer() {
+		return joueurEnCours;
+	}
+
 }
