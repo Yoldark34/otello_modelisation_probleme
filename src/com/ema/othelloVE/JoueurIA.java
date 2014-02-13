@@ -81,11 +81,18 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 
 	}
 
-	private Coup calculCoupDebutant() { // retourne un coup possible choisi
-										// aléatoirement
-										// A COMPLETER
-		Log.i("TAB", "message");
-		return (new Coup(4, 2, Jeton.NOIR));
+	/**
+	 * retourne un coup possible choisi aléatoirement
+	 * 
+	 * @return CoupDebutant
+	 */
+	private Coup calculCoupDebutant() {
+		Random r = new Random();
+		// Coup compris entre 0 et taille de la liste de coup possibles
+		int coupAleatoire = 0 + r.nextInt(plateau.getMouvementPossible(this)
+				.size() - 0);
+
+		return (plateau.getMouvementPossible(this).get(coupAleatoire));
 
 	}
 
