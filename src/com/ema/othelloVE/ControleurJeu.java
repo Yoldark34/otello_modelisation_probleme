@@ -125,48 +125,49 @@ public class ControleurJeu implements Runnable {
 			synchronized (events) {
 				if (event instanceof MyEventMotion) {
 					MyEventMotion myEventMotion = (MyEventMotion) event;
-					if (!iaReflechi) {
+					if (plateau.isCoupValide(new Coup(myEventMotion.x,
+							myEventMotion.y, joueurEnCours.getCouleur()))) {
+						Log.i("Coup", "Valide");
+
+						if (!iaReflechi) {
+							// A COMPLETER
+							// mettre à jour le plateau par retournement des
+							// pions
+							// exemple : mise à jour du plateau par pion joué
+							// par
+							// l'humain :
+							plateau.setPlateau(myEventMotion.x,
+									myEventMotion.y, joueurEnCours.getCouleur());
+							// faire le changement du joueur courant
+							changeJoueurEnCours();
+
+							// mise à jour de l'état de l'IA
+							iaReflechi = false;
+
+							// mise à jour de l'affichage
+							updateUI();
+						}
+					} else if (event instanceof MyEventCoupIA) {
+						MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
+						iaReflechi = false;
+
 						// A COMPLETER
-						if (plateau.isCoupValide(new Coup(myEventMotion.x, myEventMotion.y,
-								joueurEnCours.getCouleur())))
-						{
-							Log.i("Coup", "Valide");
-						}
-						else {
-							Log.i("Coup", "Invalide");
-						}
+						// vérifier si coup valide
 						// mettre à jour le plateau par retournement des pions
 						// exemple : mise à jour du plateau par pion joué par
-						// l'humain :
-						plateau.setPlateau(myEventMotion.x, myEventMotion.y,
+						// l'automate :
+						plateau.setPlateau(myEventunCoup.coup.getLigne(),
+								myEventunCoup.coup.getColonne(),
 								joueurEnCours.getCouleur());
 						// faire le changement du joueur courant
 						changeJoueurEnCours();
-
-						// mise à jour de l'état de l'IA
-						iaReflechi = false;
-
 						// mise à jour de l'affichage
 						updateUI();
+					} else {
+						throw new java.lang.Error();
 					}
-				} else if (event instanceof MyEventCoupIA) {
-					MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
-					iaReflechi = false;
-
-					// A COMPLETER
-					// vérifier si coup valide
-					// mettre à jour le plateau par retournement des pions
-					// exemple : mise à jour du plateau par pion joué par
-					// l'automate :
-					plateau.setPlateau(myEventunCoup.coup.getLigne(),
-							myEventunCoup.coup.getColonne(),
-							joueurEnCours.getCouleur());
-					// faire le changement du joueur courant
-					changeJoueurEnCours();
-					// mise à jour de l'affichage
-					updateUI();
 				} else {
-					throw new java.lang.Error();
+					Log.i("Coup", "Invalide");
 				}
 
 				// verification si joueur en cours peut jouer

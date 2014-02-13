@@ -67,7 +67,7 @@ public class Plateau {
 		if (othellier[coup.getLigne()][coup.getColonne()] == Jeton.VIDE) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
-					if (x != 0 && y != 0) {
+					if (x != 0 || y != 0) {
 						if (parcourirDroite(coup, x, y, false))
 						{
 							return true;
@@ -98,7 +98,9 @@ public class Plateau {
 			distance ++;
 			check  = new Coup(check.getLigne() + coeffX, check.getColonne() + coeffY, origine.getCouleur());
 			// Test si le pion est dans le plateau
-			if (check.getColonne() > 0 && check.getColonne() < NUM_LIGNES && check.getLigne() >0 && check.getLigne() < NUM_LIGNES) {
+			parcours = check.getColonne() >= 0 && check.getColonne() < NUM_LIGNES && 
+					check.getLigne() >= 0 && check.getLigne() < NUM_LIGNES;
+			if (parcours) {
 				// Il y a quelque chose sur la case
 				if (othellier[check.getLigne()][check.getColonne()] != Jeton.VIDE) {
 					// Jeton de couleur identique de l'origine
@@ -111,9 +113,6 @@ public class Plateau {
 							return true;
 						}
 					}
-				}
-				else {
-					parcours = false;
 				}
 			}
 		}
