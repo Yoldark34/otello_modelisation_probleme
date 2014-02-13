@@ -70,15 +70,14 @@ public class Plateau {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					if (x != 0 || y != 0) {
-						valide = parcourirDroite(coup, x, y, retourner);
-						if (valide) {
-							return true;
+						if (parcourirDroite(coup, x, y, retourner)) {
+							valide = true;
 						}
 					}
 				}
 			}
 		}
-		return false;
+		return valide;
 	}
 
 	/**
