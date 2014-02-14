@@ -43,6 +43,10 @@ public class Plateau {
 	public void setPlateau(int i, int j, byte couleur) {
 		this.othellier[i][j] = couleur;
 	}
+	
+	public void setSurchargePlateau(int i, int j, byte couleur) {
+		this.othellierSurcharge[i][j] = couleur;
+	}
 
 	public int getNbLignes() {
 		return NUM_LIGNES;

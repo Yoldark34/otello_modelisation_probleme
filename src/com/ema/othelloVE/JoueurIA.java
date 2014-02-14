@@ -2,6 +2,7 @@ package com.ema.othelloVE;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -97,32 +98,39 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupMoyen() {
-		// retourne le coup qui maximise les
-		// retournements
-		// sur arbre de recherche développé à 1
-		// niveau
-		// A COMPLETER
+		return (Coup)this.calculMinCoupAdversaire().get(0);
+	}
+	
+	private ArrayList<Object> calculMinCoupAdversaire() {
 		int nbCoups = plateau.getMouvementPossible(this.getCouleur()).size();
-		int nbCoupsAdverse;
 		int minCoups = -1;
 		int indexMinCoups = -1;
-		byte couleurAdverse = Jeton.NOIR;
 		Coup coupTemp;
+		int nbCoupsAdverse;
+		byte couleurAdverse = Jeton.NOIR;
 		
 		if (this.getCouleur() == Jeton.NOIR) {
 			couleurAdverse = Jeton.BLANC;
 		}
+		
+		plateau.resetSurcharge();
 		for (int i = 0; i < nbCoups; i++) {
 			coupTemp = plateau.getMouvementPossible(this.getCouleur()).get(i);
 			plateau.isCoupValide(coupTemp, true, true);
+			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), this.getCouleur());
 			nbCoupsAdverse = plateau.getMouvementPossible(couleurAdverse, true).size();
 			if (nbCoupsAdverse < minCoups || minCoups == -1) {
 				minCoups = nbCoupsAdverse;
 				indexMinCoups = i;
 			}
+			plateau.resetSurcharge();
 		}
 		
-		return plateau.getMouvementPossible(this.getCouleur()).get(indexMinCoups);
+		ArrayList<Object> result= new ArrayList<Object>();
+		result.add(plateau.getMouvementPossible(this.getCouleur()).get(indexMinCoups));
+		result.add(minCoups);
+		
+		return result;
 	}
 
 	private Coup calculCoupExpert() { // retourne le meilleur coup
