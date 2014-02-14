@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class IhmPlateau extends View {
 
@@ -193,6 +194,14 @@ public class IhmPlateau extends View {
 			}
 		}
 		return place;
+	}
+
+
+	public void notifyTourPassed() {
+		int duration = Toast.LENGTH_LONG;
+		Toast toast = Toast.makeText(getContext(),
+				"Vous passez votre tour", duration);
+		toast.show();		
 	}
 
 }

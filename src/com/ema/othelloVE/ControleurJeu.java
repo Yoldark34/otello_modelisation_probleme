@@ -2,10 +2,6 @@ package com.ema.othelloVE;
 
 import java.util.ArrayList;
 
-import com.ema.othelloVE.Jeton;
-
-import com.ema.othelloVE.Coup;
-
 import android.util.Log;
 
 public class ControleurJeu implements Runnable {
@@ -23,6 +19,7 @@ public class ControleurJeu implements Runnable {
 	private Joueur joueurEnCours;
 
 	private final String TAG = ControleurJeu.class.getSimpleName();
+	private boolean fin = false;
 	
 	public ControleurJeu(int level) {
 		niveauIA = level;
@@ -31,7 +28,6 @@ public class ControleurJeu implements Runnable {
 		joueur2 = new JoueurIA(Jeton.BLANC, plateau, niveauIA, this);
 		joueurEnCours = joueur1;
 	}
-	
 
 	public ControleurJeu(int level, boolean IANoir, boolean IA) {
 		// initialisation du plateau
@@ -103,7 +99,6 @@ public class ControleurJeu implements Runnable {
 
 		Log.v(TAG, "start");
 		Coup p;
-		boolean fin = false;
 		plateau.initPlateau();
 		ihmPlateau.initPlateau(plateau);
 		ihmScore.setScore(plateau.nombreJetons(Jeton.BLANC),
@@ -161,24 +156,26 @@ public class ControleurJeu implements Runnable {
 					}
 				} else if (event instanceof MyEventCoupIA) {
 					MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
-					if (plateau.isCoupValide(new Coup(myEventunCoup.coup.getLigne(),
-							myEventunCoup.coup.getColonne(), joueurEnCours.getCouleur()), true)) {
+					if (plateau.isCoupValide(
+							new Coup(myEventunCoup.coup.getLigne(),
+									myEventunCoup.coup.getColonne(),
+									joueurEnCours.getCouleur()), true)) {
 						Log.i("Coup", "Valide");
-						
-					iaReflechi = false;
 
-					// A COMPLETER
-					// vérifier si coup valide
-					// mettre à jour le plateau par retournement des pions
-					// exemple : mise à jour du plateau par pion joué par
-					// l'automate :
-					plateau.setPlateau(myEventunCoup.coup.getLigne(),
-							myEventunCoup.coup.getColonne(),
-							joueurEnCours.getCouleur());
-					// faire le changement du joueur courant
-					changeJoueurEnCours();
-					// mise à jour de l'affichage
-					updateUI();
+						iaReflechi = false;
+
+						// A COMPLETER
+						// vérifier si coup valide
+						// mettre à jour le plateau par retournement des pions
+						// exemple : mise à jour du plateau par pion joué par
+						// l'automate :
+						plateau.setPlateau(myEventunCoup.coup.getLigne(),
+								myEventunCoup.coup.getColonne(),
+								joueurEnCours.getCouleur());
+						// faire le changement du joueur courant
+						changeJoueurEnCours();
+						// mise à jour de l'affichage
+						updateUI();
 					} else {
 						Log.i("Coup", "Invalide");
 					}
@@ -190,7 +187,7 @@ public class ControleurJeu implements Runnable {
 				// A COMPLETER
 				// si joueur en cours est de type IA : mettre à jour iaReflechi
 				// et lancer la demande de calcul du coup:
-				if (joueurEnCours.isIA()) {
+				if (joueurEnCours.isIA && !plateau.isFull()) {
 					iaReflechi = true;
 					((JoueurIA) joueurEnCours).calculCoup();
 
@@ -225,11 +222,19 @@ public class ControleurJeu implements Runnable {
 	private void changeJoueurEnCours()
 	// modification du joueur en cours
 	{
-		if (joueurEnCours == joueur1)
+		if (joueurEnCours == joueur1) {
 			joueurEnCours = joueur2;
-		else
+		} else {
 			joueurEnCours = joueur1;
-
+		}
+		if (plateau.isFull()) {
+			fin = true;
+		}
+		// Change de joueur si le nouveau joueu ne peux rien faire
+		else if (plateau.getMouvementPossible(joueurEnCours.couleur).isEmpty()) {
+			changeJoueurEnCours();
+		}
+		
 	}
 
 	public void publishEvent(MyEvent event) {

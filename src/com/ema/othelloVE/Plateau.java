@@ -179,5 +179,16 @@ public class Plateau {
 		}
 		return toReturn;
 	}
-
+	
+	public boolean isFull() {
+		// Parcours de toute la grille
+		for (int x=0;x<NUM_LIGNES;x++) {
+			for (int y=0;y<NUM_LIGNES;y++) {
+				if (othellier[x][y] == Jeton.VIDE) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }
