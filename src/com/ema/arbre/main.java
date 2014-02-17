@@ -45,19 +45,19 @@ public class main {
 		}
 	}
 	
-	private static void depthSearch(ArbreNAire<Integer> arbre) {
+	public static void depthSearch(ArbreNAire<Integer> arbre) {
 		if (!arbre.isRacine()) {
-			System.err.print(" - ");
+			System.out.println(" - ");
 		}
 		for (int i = 0; i < arbre.getNbFils(); i++) {
 			arbre.goToFils(i);
-			System.err.print(arbre.getItem());
+			System.out.println(arbre.getItem() + " ( " + arbre.getHeuristique() + " ) ");
 			depthSearch(arbre);
 			arbre.goToPere();
 		}
 	}
 	
-	private static ArrayList<Integer> minMax(ArbreNAire<Integer> arbre, int profondeur) {
+	public static ArrayList<Integer> minMax(ArbreNAire<Integer> arbre, int profondeur) {
 		ArrayList<Integer> toReturn = new ArrayList<Integer>();
 		toReturn.add(0);
 		boolean minMax=true; // max = true

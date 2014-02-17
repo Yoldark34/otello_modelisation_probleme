@@ -3,6 +3,10 @@ package com.ema.othelloVE;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.ema.arbre.ArbreNAire;
+import com.ema.arbre.Noeud;
+import com.ema.arbre.main;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -98,47 +102,92 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupMoyen() {
-		return (Coup)this.calculMinCoupAdversaire().get(0);
+		return (Coup)this.calculMinCoupAdversaire(1).get(0);
 	}
 	
-	private ArrayList<Object> calculMinCoupAdversaire() {
-		int nbCoups = plateau.getMouvementPossible(this.getCouleur()).size();
-		int minCoups = -1;
-		int indexMinCoups = -1;
-		Coup coupTemp;
-		int nbCoupsAdverse;
+	private byte getCouleurAdverse(byte couleur) {
 		byte couleurAdverse = Jeton.NOIR;
 		
-		if (this.getCouleur() == Jeton.NOIR) {
+		if (couleur == Jeton.NOIR) {
 			couleurAdverse = Jeton.BLANC;
 		}
-		
+		return couleurAdverse;
+	}
+	
+	private ArrayList<Object> calculMinCoupAdversaire(int profondeur) {
 		plateau.resetSurcharge();
+		byte[][] surchargeSav = plateau.cloneSurcharge();
+		int nbCoups = plateau.getMouvementPossible(this.getCouleur()).size();
+		int minRetournement = -1;
+		Coup coupTemp;
+		int nbRetournement;
+		
+		ArbreNAire<Integer> arbre = new ArbreNAire<Integer>(1);
+		
+		
 		for (int i = 0; i < nbCoups; i++) {
-			coupTemp = plateau.getMouvementPossible(this.getCouleur()).get(i);
-			plateau.isCoupValide(coupTemp, true, true);
+			plateau.setSurcharge(surchargeSav);
+			arbre.addFils(arbre.getItem() * 10 + i);
+			arbre.goToFils(i);
+			//le coup de l'IA
+			coupTemp = plateau.getMouvementPossible(this.getCouleur(), true).get(i);
+		
+			//nombre de retournement en jouant ce coup
+			nbRetournement = plateau.getRetournementPossibleEnRetournant(coupTemp);
+			
+			//on place le jeton sur la surcharge
 			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), this.getCouleur());
-			nbCoupsAdverse = plateau.getMouvementPossible(couleurAdverse, true).size();
-			if (nbCoupsAdverse < minCoups || minCoups == -1) {
-				minCoups = nbCoupsAdverse;
-				indexMinCoups = i;
-			}
-			plateau.resetSurcharge();
+			
+			arbre.setHeuristique(nbRetournement);
+			
+			this.createChildTree(plateau, arbre, getCouleurAdverse(this.getCouleur()), profondeur-1);
+			
+			arbre.goToPere();
 		}
+		arbre.goToRacine();
+		main.depthSearch(arbre);
+		ArrayList<Integer> resultMinMax = main.minMax(arbre, 2);
 		
 		ArrayList<Object> result= new ArrayList<Object>();
-		result.add(plateau.getMouvementPossible(this.getCouleur()).get(indexMinCoups));
-		result.add(minCoups);
+		result.add(plateau.getMouvementPossible(this.getCouleur()).get(resultMinMax.get(0)));
+		result.add(minRetournement);
 		
 		return result;
 	}
+	
+	private ArbreNAire<Integer> createChildTree(Plateau plateau, ArbreNAire<Integer> arbre, byte couleur, int profondeur) {
+		byte[][] surchargeSav = plateau.cloneSurcharge();
+		int nbCoups = plateau.getMouvementPossible(couleur, true).size();
+		Coup coupTemp;
+		int nbRetournement;
+		
+		for (int i = 0; i < nbCoups; i++) {
+			plateau.setSurcharge(surchargeSav);
+			arbre.addFils(arbre.getItem() * 10 + i);
+			arbre.goToFils(i);
+			//le coup de l'IA
+			coupTemp = plateau.getMouvementPossible(couleur, true).get(i);
+		
+			//nombre de retournement en jouant ce coup
+			nbRetournement = plateau.getRetournementPossibleEnRetournant(coupTemp);
+			
+			//on place le jeton sur la surcharge
+			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), couleur);
+			
+			arbre.setHeuristique(nbRetournement);
+			
+			if (profondeur > 0) {
+				this.createChildTree(plateau, arbre, getCouleurAdverse(couleur), profondeur-1);
+			}
+			
+			arbre.goToPere();
+		}
+		
+		return arbre;
+	}
 
-	private Coup calculCoupExpert() { // retourne le meilleur coup
-										// obtenu par recherche Minmax sur arbre
-										// de recherche développé à 2 ou 3
-										// niveaux
-										// A COMPLETER
-		return (new Coup(4, 2, Jeton.NOIR));
+	private Coup calculCoupExpert() {
+		return (Coup)this.calculMinCoupAdversaire(3).get(0);
 
 	}
 
