@@ -187,7 +187,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupExpert() {
-		return (Coup)this.calculMinCoupAdversaire(8).get(0);
+		return (Coup)this.calculMinCoupAdversaire(4).get(0);
 
 	}
 
