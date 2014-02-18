@@ -25,7 +25,7 @@ public class ControleurJeu implements Runnable {
 		niveauIA = level;
 		plateau = new Plateau();
 		joueur1 = new JoueurIA(Jeton.NOIR, plateau, niveauIA, this);
-		joueur2 = new JoueurIA(Jeton.BLANC, plateau, 1, this);
+		joueur2 = new JoueurIA(Jeton.BLANC, plateau, niveauIA, this);
 		joueurEnCours = joueur1;
 	}
 

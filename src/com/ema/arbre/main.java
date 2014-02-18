@@ -66,8 +66,8 @@ public class main {
 		for (int i=0;i<arbre.getNbFils(); i++) {
 			arbre.goToFils(i);
 			ArrayList<Integer> result = minMax(arbre, profondeur-1, !minMax);
-			if (max == -1 || max < result.get(1)) {
-				max = result.get(1);
+			if (max == -1 || max < arbre.getHeuristique() - result.get(1)) {
+				max = arbre.getHeuristique() - result.get(1);
 				maxHeuristiqueItem = i;
 				toReturn.set(0, i);
 			}
@@ -87,12 +87,12 @@ public class main {
 			for (int i=0; i < arbre.getNbFils(); i++) {
 				arbre.goToFils(i);
 				ArrayList<Integer> result = minMax(arbre, profondeur-1, !minMax);
-				if (max == -1 || (minMax == true && result.get(1) > max)) { // Traitement Max
-					max = result.get(1);
+				if (max == -1 || (minMax == true && arbre.getHeuristique() - result.get(1) > max)) { // Traitement Max
+					max = arbre.getHeuristique() - result.get(1);
 					toReturn.set(0, i);
 				}
-				if (min == -1 || (minMax == false && result.get(1) < min)) { // Traitement Min
-					min = result.get(1);
+				if (min == -1 || (minMax == false && arbre.getHeuristique() + result.get(1) < min)) { // Traitement Min
+					min = arbre.getHeuristique() + result.get(1);
 					toReturn.set(0, i);
 				}
 				

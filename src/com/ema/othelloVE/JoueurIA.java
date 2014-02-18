@@ -102,7 +102,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupMoyen() {
-		return (Coup)this.calculMinCoupAdversaire(1).get(0);
+		return (Coup)this.calculMinCoupAdversaire(2).get(0);
 	}
 	
 	private byte getCouleurAdverse(byte couleur) {
@@ -146,7 +146,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 		}
 		arbre.goToRacine();
 		main.depthSearch(arbre);
-		ArrayList<Integer> resultMinMax = main.minMax(arbre, 2);
+		ArrayList<Integer> resultMinMax = main.minMax(arbre, profondeur);
 		
 		ArrayList<Object> result= new ArrayList<Object>();
 		result.add(plateau.getMouvementPossible(this.getCouleur()).get(resultMinMax.get(0)));
@@ -176,7 +176,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 			
 			arbre.setHeuristique(nbRetournement);
 			
-			if (profondeur > 0) {
+			if (profondeur > 1) {
 				this.createChildTree(plateau, arbre, getCouleurAdverse(couleur), profondeur-1);
 			}
 			
@@ -187,7 +187,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupExpert() {
-		return (Coup)this.calculMinCoupAdversaire(3).get(0);
+		return (Coup)this.calculMinCoupAdversaire(8).get(0);
 
 	}
 

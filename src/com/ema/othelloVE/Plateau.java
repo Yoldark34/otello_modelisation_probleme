@@ -170,6 +170,8 @@ public class Plateau {
 							parcours = false;
 						} else {
 							coupResult = check;
+							//stop parcours
+							parcours = false;
 						}
 					}
 				} else {
@@ -220,15 +222,14 @@ public class Plateau {
 								//this.setPlateau(checkRetournement.getLigne(), checkRetournement.getColonne(), origine.getCouleur());
 								nombreRetournement++;
 							}
+							//enlever 1 car le dernier jeton est un jeton de notre couleur.
+							nombreRetournement--;
 						}
 					}
 				}
 			}
 		}
-		//enlever 1 car le dernier jeton est un jeton de notre couleur.
-		if (nombreRetournement>0) {
-			nombreRetournement--;
-		}
+		
 		return nombreRetournement;
 	}
 	
