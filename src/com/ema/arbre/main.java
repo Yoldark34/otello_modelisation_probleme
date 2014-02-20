@@ -110,4 +110,45 @@ public class main {
 		}
 		return toReturn;
 	}
+	
+	public int alphaBeta(ArbreNAire<Integer> arbre) {
+		return alphaBeta(arbre, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	public int alphaBeta(ArbreNAire<Integer> arbre, int alpha, int beta) {
+		/* alpha est toujours inférieur à beta */
+		int val;
+		if (arbre.isNoeudFeuille()) {
+			// P est une feuille alors
+			val = arbre.getHeuristique();
+		} else {
+			if (arbre.isMin()) {
+				val = Integer.MAX_VALUE;
+				for (int i = 0; i < arbre.getNbFils(); i++) {
+					arbre.goToFils(i);
+					
+					val = Math.min(val, alphaBeta(arbre, alpha, beta));
+					if (alpha >= val) {
+						/* coupure alpha */
+						return val;
+					}
+					beta = Math.min(beta, val);
+					arbre.goToPere();
+				}
+			} else {
+				val = Integer.MIN_VALUE;
+				for (int i = 0; i < arbre.getNbFils(); i++) {
+					arbre.goToFils(i);
+					val = Math.max(val, alphaBeta(arbre, alpha, beta));
+					if (val >= beta) {
+						/* coupure beta */
+						return val;
+					}
+					alpha = Math.max(alpha, val);
+					arbre.goToPere();
+				}
+			}
+		}
+		return val;
+	}
 }
