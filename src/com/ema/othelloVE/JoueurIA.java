@@ -32,8 +32,8 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	private void fillTabPonderation() {
 		tabPonderation = new int[plateau.getNbLignes()][plateau.getNbLignes()];
 		int[] patternCorner = {7, 3, 6, 6, 6, 6, 3, 7};
-		int[] patternNearCorner = {6, 3, 4, 4, 4, 4, 3, 6};	
-		int[] patternClassicLine = {3, 3, 3, 3, 3, 3, 3, 3};
+		int[] patternClassicLine = {6, 3, 4, 4, 4, 4, 3, 6};	
+		int[] patternNearCorner = {3, 3, 3, 3, 3, 3, 3, 3};
 		for (int i=0;i<plateau.getNbLignes(); i++) { // Line
 			for (int j=0;j<plateau.getNbLignes(); j++) { // Column
 				if(i==0 || i==plateau.getNbLignes()-1) { // Corner
