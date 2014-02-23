@@ -44,13 +44,17 @@ public class Plateau {
 	public byte[][] getSurcharge() {
 		return this.othellierSurcharge;
 	}
-
-	public void setSurcharge(byte[][] surcharge) {
+	
+	public void setPlateau(byte[][] othellier) {
 		for (int i = 0; i < NUM_LIGNES; i++) {
 			for (int j = 0; j < NUM_LIGNES; j++) {
-				othellierSurcharge[i][j] = new Byte(surcharge[i][j]);
+				this.othellier[i][j] = new Byte(othellier[i][j]);
 			}
 		}
+	}
+
+	public void setSurcharge(byte[][] surcharge) {
+		this.othellierSurcharge = surcharge;
 	}
 
 	public void initPlateau() {
@@ -320,5 +324,14 @@ public class Plateau {
 			}
 		}
 		return true;
+	}
+
+	public Plateau copiePlateau() {
+		Plateau result = new Plateau();
+		result.othellier = this.othellier;
+		result.othellierSurcharge = this.othellierSurcharge;
+		result.coupsPossible = this.coupsPossible;
+		
+		return result;
 	}
 }

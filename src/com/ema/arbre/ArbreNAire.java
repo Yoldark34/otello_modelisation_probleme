@@ -6,6 +6,7 @@
 
 package com.ema.arbre;
 
+import com.ema.othelloVE.Jeton;
 import com.ema.othelloVE.Plateau;
 
 
@@ -14,10 +15,26 @@ import com.ema.othelloVE.Plateau;
  * @author Admin
  */
 public class ArbreNAire<T>{
-	private Noeud<T> racine;
+	/*private Noeud<T> racine;
 	private Noeud<T> vue;
-	Plateau plateau;
-	Byte couleur;
+	int profondeur;
+	
+	public int getProfondeur() {
+		return profondeur;
+	}
+
+	public void setProfondeur(int profondeur) {
+		this.profondeur = profondeur;
+	}
+
+	private byte getCouleurAdverse() {
+		byte couleurAdverse = Jeton.NOIR;
+		
+		if (this.getCouleur() == Jeton.NOIR) {
+			couleurAdverse = Jeton.BLANC;
+		}
+		return couleurAdverse;
+	}
 	
 	public ArbreNAire() {
 	}
@@ -45,13 +62,20 @@ public class ArbreNAire<T>{
 	}
 
 	public boolean isNoeudFeuille() {
-		return this.vue.isNoeudFeuille();
+		return this.profondeur == 0;
 	}
 
 	public int getNbFils() {
-		//regarder nombre de coups etc etc
+		return this.plateau.getMouvementPossible(this.getCouleurAdverse()).size();
+	}
+	
+	public void createFils(T item) {
+		byte[][] surchargeSav = this.vue.plateau.cloneSurcharge();
+		this.vue.addFils(item);
+		this.goToFils(item);
+		this.plateau.getMouvementPossible(this.getCouleurAdverse()).size();
 		
-		return this.vue.getNbFils();
+		plateau.setSurcharge(surchargeSav);
 	}
 
 	public void goToRacine() {
@@ -76,31 +100,36 @@ public class ArbreNAire<T>{
 	}
 	
 	public int getHeuristique() {
+		
+		
+		
+		
 		return this.vue.getHeuristique();
 	}
-
-	public void setHeuristique(int heuristique) {
-		this.vue.setHeuristique(heuristique);
-	}
 	
-	public boolean isMin() {
-		return this.vue.isMin();
+	public boolean getType() {
+		return this.vue.type;
 	}
+
+	public void setType(boolean isMin) {
+		this.vue.type = isMin;
+	}
+
 
 	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
 	}
 	
 	public Plateau getPlateau() {
-		return plateau;
+		return this.plateau;
 	}
 
 	public Byte getCouleur() {
-		return couleur;
+		return this.vue.couleur;
 	}
 
 	public void setCouleur(Byte couleur) {
-		this.couleur = couleur;
-	}
+		this.vue.couleur = couleur;
+	}*/
 	
 }

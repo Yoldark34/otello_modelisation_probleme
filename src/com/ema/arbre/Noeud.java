@@ -8,20 +8,42 @@ package com.ema.arbre;
 
 import java.util.ArrayList;
 
+import com.ema.othelloVE.Plateau;
+
 /**
  *
  * @author Admin
  */
 public class Noeud <T> {
+	private final boolean MIN = false;
+	private final boolean MAX = true;
 	private T info;
-	boolean isMin;
-
-	public boolean isMin() {
-		return isMin;
+	boolean type;
+	Plateau plateau;
+	Byte couleur;
+	
+	public void setPlateau(Plateau plateau) {
+		this.plateau = plateau;
+	}
+	
+	public Plateau getPlateau() {
+		return plateau;
 	}
 
-	public void setMin(boolean isMin) {
-		this.isMin = isMin;
+	public Byte getCouleur() {
+		return couleur;
+	}
+
+	public void setCouleur(Byte couleur) {
+		this.couleur = couleur;
+	}
+
+	public boolean isType() {
+		return type;
+	}
+
+	public void setType(boolean type) {
+		this.type = type;
 	}
 
 	public T getInfo() {

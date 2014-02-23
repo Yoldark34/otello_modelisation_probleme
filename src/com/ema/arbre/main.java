@@ -24,7 +24,7 @@ public class main {
 		minMax(arbre, 2);
 	}*/
 	
-	private static ArbreNAire<Integer> createArbre(int largeur, int profondeur) {
+	/*private static ArbreNAire<Integer> createArbre(int largeur, int profondeur) {
 		ArbreNAire<Integer> arbre = new ArbreNAire<Integer>(1);
 		createArbre(arbre, largeur, profondeur);
 		arbre.goToRacine();
@@ -109,44 +109,43 @@ public class main {
 			toReturn.add(arbre.getHeuristique()	);
 		}
 		return toReturn;
-	}
+	}*/
 	
-	public static int alphaBeta(ArbreNAire<Integer> arbre) {
+	public static int alphaBeta(Node arbre) {
 		return alphaBeta(arbre, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
-	public static int alphaBeta(ArbreNAire<Integer> arbre, int alpha, int beta) {	
+	public static int alphaBeta(Node arbre, int alpha, int beta) {	
 		/* alpha est toujours inférieur à beta */
 		int val;
 		if (arbre.isNoeudFeuille()) {
 			// P est une feuille alors
 			val = arbre.getHeuristique();
 		} else {
-			if (arbre.isMin()) {
+			if (arbre.getType() == Node.MIN) {
 				val = Integer.MAX_VALUE;
 				
 				for (int i = 0; i < arbre.getNbFils(); i++) {
-					arbre.goToFils(i);
+					Node fils = arbre.getFils(i);
 					
-					val = Math.min(val, alphaBeta(arbre, alpha, beta));
+					val = Math.min(val, alphaBeta(fils, alpha, beta));
 					if (alpha >= val) {
 						/* coupure alpha */
 						return val;
 					}
 					beta = Math.min(beta, val);
-					arbre.goToPere();
 				}
 			} else {
 				val = Integer.MIN_VALUE;
 				for (int i = 0; i < arbre.getNbFils(); i++) {
-					arbre.goToFils(i);
-					val = Math.max(val, alphaBeta(arbre, alpha, beta));
+					Node fils = arbre.getFils(i);
+					
+					val = Math.max(val, alphaBeta(fils, alpha, beta));
 					if (val >= beta) {
 						/* coupure beta */
 						return val;
 					}
 					alpha = Math.max(alpha, val);
-					arbre.goToPere();
 				}
 			}
 		}
