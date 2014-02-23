@@ -140,13 +140,17 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 		Coup coupTemp;
 		int nbRetournement;
 		
-		ArbreNAire<Integer> arbre = new ArbreNAire<Integer>(1);
+		
 		
 		
 		for (int i = 0; i < nbCoups; i++) {
+			ArbreNAire<Integer> arbre = new ArbreNAire<Integer>(1);
+			
+			
 			plateau.setSurcharge(surchargeSav);
-			arbre.addFils(arbre.getItem() * 10 + i);
-			arbre.goToFils(i);
+			
+			//arbre.addFils(arbre.getItem() * 10 + i);
+			//arbre.goToFils(i);
 			//le coup de l'IA
 			coupTemp = plateau.getMouvementPossible(this.getCouleur(), true).get(i);
 		
@@ -156,18 +160,24 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 			//on place le jeton sur la surcharge
 			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), this.getCouleur());
 			
-			arbre.setHeuristique(nbRetournement*tabPonderation[coupTemp.getLigne()][coupTemp.getColonne()]);
+			//arbre.setHeuristique(nbRetournement+tabPonderation[coupTemp.getLigne()][coupTemp.getColonne()]);
+			arbre.setPlateau(plateau);
+			arbre.setCouleur(this.getCouleur());
 			
-			this.createChildTree(plateau, arbre, getCouleurAdverse(this.getCouleur()), profondeur-1);
+			//this.createChildTree(plateau, arbre, getCouleurAdverse(this.getCouleur()), profondeur-1);
 			
-			arbre.goToPere();
+			if (profondeur > 1) {
+				int heuristique = main.alphaBeta(arbre);
+			}
+			
+			//arbre.goToPere();
 		}
-		arbre.goToRacine();
-		main.depthSearch(arbre);
-		ArrayList<Integer> resultMinMax = main.minMax(arbre, profondeur);
+		//arbre.goToRacine();
+		//main.depthSearch(arbre);
+		//ArrayList<Integer> resultMinMax = main.minMax(arbre, profondeur);
 		
 		ArrayList<Object> result= new ArrayList<Object>();
-		result.add(plateau.getMouvementPossible(this.getCouleur()).get(resultMinMax.get(0)));
+		//result.add(plateau.getMouvementPossible(this.getCouleur()).get(resultMinMax.get(0)));
 		result.add(minRetournement);
 		
 		return result;

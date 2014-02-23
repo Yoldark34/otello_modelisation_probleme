@@ -6,6 +6,8 @@
 
 package com.ema.arbre;
 
+import com.ema.othelloVE.Plateau;
+
 
 /**
  *
@@ -14,6 +16,8 @@ package com.ema.arbre;
 public class ArbreNAire<T>{
 	private Noeud<T> racine;
 	private Noeud<T> vue;
+	Plateau plateau;
+	Byte couleur;
 	
 	public ArbreNAire() {
 	}
@@ -45,6 +49,8 @@ public class ArbreNAire<T>{
 	}
 
 	public int getNbFils() {
+		//regarder nombre de coups etc etc
+		
 		return this.vue.getNbFils();
 	}
 
@@ -75,6 +81,26 @@ public class ArbreNAire<T>{
 
 	public void setHeuristique(int heuristique) {
 		this.vue.setHeuristique(heuristique);
+	}
+	
+	public boolean isMin() {
+		return this.vue.isMin();
+	}
+
+	public void setPlateau(Plateau plateau) {
+		this.plateau = plateau;
+	}
+	
+	public Plateau getPlateau() {
+		return plateau;
+	}
+
+	public Byte getCouleur() {
+		return couleur;
+	}
+
+	public void setCouleur(Byte couleur) {
+		this.couleur = couleur;
 	}
 	
 }

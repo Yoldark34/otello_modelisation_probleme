@@ -111,11 +111,11 @@ public class main {
 		return toReturn;
 	}
 	
-	public int alphaBeta(ArbreNAire<Integer> arbre) {
+	public static int alphaBeta(ArbreNAire<Integer> arbre) {
 		return alphaBeta(arbre, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
-	public int alphaBeta(ArbreNAire<Integer> arbre, int alpha, int beta) {
+	public static int alphaBeta(ArbreNAire<Integer> arbre, int alpha, int beta) {	
 		/* alpha est toujours inférieur à beta */
 		int val;
 		if (arbre.isNoeudFeuille()) {
@@ -124,6 +124,7 @@ public class main {
 		} else {
 			if (arbre.isMin()) {
 				val = Integer.MAX_VALUE;
+				
 				for (int i = 0; i < arbre.getNbFils(); i++) {
 					arbre.goToFils(i);
 					

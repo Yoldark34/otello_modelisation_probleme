@@ -14,6 +14,15 @@ import java.util.ArrayList;
  */
 public class Noeud <T> {
 	private T info;
+	boolean isMin;
+
+	public boolean isMin() {
+		return isMin;
+	}
+
+	public void setMin(boolean isMin) {
+		this.isMin = isMin;
+	}
 
 	public T getInfo() {
 		return info;
