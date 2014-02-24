@@ -6,14 +6,11 @@
 
 package com.ema.arbre;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Admin
  */
-public class main {
-
+public class Algo {
 	/**
 	 * @param args the command line arguments
 	 */

@@ -14,7 +14,6 @@ public class Node {
 	Byte couleur;
 	int profondeur;
 	int heuristique;
-	List<Node> fils;
 	Node pere = null;
 	boolean type;
 	
@@ -23,21 +22,21 @@ public class Node {
 	}
 
 	public Node(Plateau plateau, Coup coup, byte couleur, boolean type, int profondeur, Node pere) {
-		byte[][] surchargeSav = plateau.cloneSurcharge();
-		Plateau newPlateau = plateau.copiePlateau();
-		newPlateau.setSurcharge(surchargeSav);
+		this.plateau = new Plateau(plateau);
 		
 		int nbRetournement = 0;
+		int supplement = 0;
 		if (coup != null) {
-			nbRetournement = plateau.getRetournementPossibleEnRetournant(coup);
-			newPlateau.setSurchargePlateau(coup.getLigne(), coup.getColonne(), couleur);
+			nbRetournement = this.plateau.getRetournementPossibleEnRetournant(coup);
+			this.plateau.setPlateau(coup.getLigne(), coup.getColonne(), couleur);
+			supplement = Plateau.getPonderation(coup.getLigne(), coup.getColonne());
 		}
 		
-		this.heuristique = nbRetournement;
-		this.plateau = newPlateau;
+		this.heuristique = nbRetournement + supplement;
+		
 		this.couleur = couleur;
 		this.profondeur = profondeur;
-		this.coups = newPlateau.getMouvementPossible(this.getCouleurAdverse(), true);
+		this.coups = this.plateau.getMouvementPossible(this.getCouleurAdverse());
 		this.type = type;
 		this.pere = pere;
 	}
@@ -59,10 +58,7 @@ public class Node {
 
 		Coup coupTemp = this.coups.get(i);
 		
-		
-		Node fils = new Node(this.plateau, coupTemp, this.getCouleurAdverse(), !this.type, profondeurFils, this);
-		
-		return fils;
+		return new Node(this.plateau, coupTemp, this.getCouleurAdverse(), !this.type, profondeurFils, this);
 	}
 	
 	public Plateau getPlateau() {

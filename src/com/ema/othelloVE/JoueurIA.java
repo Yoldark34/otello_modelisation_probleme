@@ -8,13 +8,13 @@ import android.os.AsyncTask;
 
 import com.ema.arbre.ArbreNAire;
 import com.ema.arbre.Node;
-import com.ema.arbre.main;
+import com.ema.arbre.Algo;
 
 public class JoueurIA extends Joueur implements JoueurIAAction {
 
 	private int force;
 	private Coup p;
-	private int[][] tabPonderation ;
+
 	
 	private static final int DEBUTANT = 1;
 	private static final int MOYEN = 2;
@@ -28,26 +28,10 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 		super(couleur, plateau, true);
 		force = niveau;
 		controlJeu = control;
-		fillTabPonderation();
+		
 	}
 
-	private void fillTabPonderation() {
-		tabPonderation = new int[plateau.getNbLignes()][plateau.getNbLignes()];
-		int[] patternCorner = {7, 3, 6, 6, 6, 6, 3, 7};
-		int[] patternClassicLine = {6, 3, 4, 4, 4, 4, 3, 6};	
-		int[] patternNearCorner = {3, 3, 3, 3, 3, 3, 3, 3};
-		for (int i=0;i<plateau.getNbLignes(); i++) { // Line
-			for (int j=0;j<plateau.getNbLignes(); j++) { // Column
-				if(i==0 || i==plateau.getNbLignes()-1) { // Corner
-					tabPonderation[i][j] = patternCorner[j];
-				} else if(i==1 || i==plateau.getNbLignes()-2) { // Just before or after the corner
-					tabPonderation[i][j] = patternNearCorner[j];
-				} else { // A simple line
-					tabPonderation[i][j] = patternClassicLine[j];
-				}
-			}
-		}		
-	}
+
 
 	private class JoueurExpert extends AsyncTask<Void, Void, Coup> { // classe
 																		// permettant
@@ -126,14 +110,12 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 	
 	private Coup calculMinCoupAdversaire(int profondeur) {
-		plateau.resetSurcharge();
 		List<Coup> coupsPossible = plateau.getMouvementPossible(this.getCouleur());
 		Coup coupTemp;
 		int maxi = Integer.MIN_VALUE;
 		int maxIndex = -1;
 		
 		for (int i = 0; i < coupsPossible.size(); i++) {
-			
 			//arbre.addFils(arbre.getItem() * 10 + i);
 			//arbre.goToFils(i);
 			//le coup de l'IA
@@ -155,7 +137,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 			
 			//this.createChildTree(plateau, arbre, getCouleurAdverse(this.getCouleur()), profondeur-1);
 			
-			int heuristique = main.alphaBeta(node);
+			int heuristique = Algo.alphaBeta(node);
 			
 			if (heuristique > maxi) {
 				maxIndex = i;
@@ -203,7 +185,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}*/
 
 	private Coup calculCoupExpert() {
-		return this.calculMinCoupAdversaire(2);
+		return this.calculMinCoupAdversaire(3);
 
 	}
 

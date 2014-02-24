@@ -12,37 +12,27 @@ public class Plateau {
 	private static final int NUM_LIGNES = 8;
 	/** othellier[ligne][colonne] */
 	private byte[][] othellier;
-	private byte[][] othellierSurcharge;
 	private List<Coup> coupsPossible = new ArrayList<Coup>(); //coups possibles
+	private static int[][] tabPonderation = {{7, 3, 6, 6, 6, 6, 3, 7}, {6, 3, 4, 4, 4, 4, 3, 6}, {3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, 
+											{3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, {6, 3, 4, 4, 4, 4, 3, 6}, {7, 3, 6, 6, 6, 6, 3, 7}} ;
+	
+	
+	public static int getPonderation(int ligne, int colonne) {
+		return Plateau.tabPonderation[ligne][colonne];
+	}
 
 	public Plateau() {
 		othellier = new byte[NUM_LIGNES][NUM_LIGNES];
-		othellierSurcharge = new byte[NUM_LIGNES][NUM_LIGNES];
 	}
-
-	public void resetSurcharge() {
-		synchronized (othellierSurcharge) {
-			for (int i = 0; i < NUM_LIGNES; i++) {
-				for (int j = 0; j < NUM_LIGNES; j++) {
-					othellierSurcharge[i][j] = new Byte(othellier[i][j]);
-				}
-			}
-		}
-	}
-
-	public byte[][] cloneSurcharge() {
-		byte[][] result = new byte[NUM_LIGNES][NUM_LIGNES];
+	
+	public Plateau(Plateau plateau) {
+		othellier = new byte[NUM_LIGNES][NUM_LIGNES];
+		
 		for (int i = 0; i < NUM_LIGNES; i++) {
 			for (int j = 0; j < NUM_LIGNES; j++) {
-				result[i][j] = new Byte(othellierSurcharge[i][j]);
+				othellier[i][j] = new Byte(plateau.othellier[i][j]);
 			}
 		}
-
-		return result;
-	}
-
-	public byte[][] getSurcharge() {
-		return this.othellierSurcharge;
 	}
 	
 	public void setPlateau(byte[][] othellier) {
@@ -51,10 +41,6 @@ public class Plateau {
 				this.othellier[i][j] = new Byte(othellier[i][j]);
 			}
 		}
-	}
-
-	public void setSurcharge(byte[][] surcharge) {
-		this.othellierSurcharge = surcharge;
 	}
 
 	public void initPlateau() {
@@ -102,11 +88,7 @@ public class Plateau {
 		return false;
 	}
 
-	public void setSurchargePlateau(int i, int j, byte couleur) {
-		this.othellierSurcharge[i][j] = couleur;
-	}
-
-	public int getNbLignes() {
+	public static int getNbLignes() {
 		return NUM_LIGNES;
 	}
 
@@ -139,21 +121,12 @@ public class Plateau {
 	 * @return
 	 */
 	public boolean isCoupValide(Coup origine, boolean retourner) {
-		return isCoupValide(origine, retourner, false);
-	}
-
-	public boolean isCoupValide(Coup origine, boolean retourner,
-			boolean surcharge) {
-		byte[][] othellierParcours = othellier;
-		if (surcharge) {
-			othellierParcours = othellierSurcharge;
-		}
 		boolean valide = false;
-		if (othellierParcours[origine.getLigne()][origine.getColonne()] == Jeton.VIDE) {
+		if (othellier[origine.getLigne()][origine.getColonne()] == Jeton.VIDE) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					if (x != 0 || y != 0) {
-						Coup check = parcourirDroite(origine, x, y, surcharge);
+						Coup check = parcourirDroite(origine, x, y);
 						if (check != null) {
 							valide = true;
 							if (retourner) {
@@ -169,7 +142,7 @@ public class Plateau {
 											checkRetournement.getLigne() + x,
 											checkRetournement.getColonne() + y,
 											origine.getCouleur());
-									othellierParcours[checkRetournement
+									othellier[checkRetournement
 											.getLigne()][checkRetournement
 											.getColonne()] = origine
 											.getCouleur();
@@ -194,12 +167,7 @@ public class Plateau {
 	 *            true si on veux aussi retourner
 	 * @return
 	 */
-	private Coup parcourirDroite(Coup origine, int coeffX, int coeffY,
-			boolean surcharge) {
-		byte[][] othellierParcours = othellier;
-		if (surcharge) {
-			othellierParcours = othellierSurcharge;
-		}
+	private Coup parcourirDroite(Coup origine, int coeffX, int coeffY) {
 		boolean parcours = true;
 		Coup coupResult = null;
 		Coup check = new Coup(origine.getLigne(), origine.getColonne(),
@@ -215,9 +183,9 @@ public class Plateau {
 					&& check.getLigne() < NUM_LIGNES;
 			if (parcours) {
 				// Il y a quelque chose sur la case
-				if (othellierParcours[check.getLigne()][check.getColonne()] != Jeton.VIDE) {
+				if (othellier[check.getLigne()][check.getColonne()] != Jeton.VIDE) {
 					// Jeton de couleur identique de l'origine
-					if (origine.getCouleur() == othellierParcours[check
+					if (origine.getCouleur() == othellier[check
 							.getLigne()][check.getColonne()]) {
 						// Test si la distance est plus grande que 1
 						if (distance == 1) {
@@ -263,13 +231,9 @@ public class Plateau {
 	 * @return
 	 */
 	public List<Coup> getMouvementPossible(byte couleur) {
-		return getMouvementPossible(couleur, false);
-	}
-
-	public List<Coup> getMouvementPossible(byte couleur, boolean surcharge) {
 		List<Coup> toReturn = new ArrayList<Coup>();
 		for (Coup c : coupsPossible) {
-			if (isCoupValide(new Coup(c.getLigne(), c.getColonne(), couleur), false, surcharge)) {
+			if (isCoupValide(new Coup(c.getLigne(), c.getColonne(), couleur), false)) {
 				toReturn.add(new Coup(c.getLigne(), c.getColonne(), couleur));
 			}
 		}
@@ -278,11 +242,11 @@ public class Plateau {
 
 	public int getRetournementPossibleEnRetournant(Coup origine) {
 		int nombreRetournement = 0;
-		if (othellierSurcharge[origine.getLigne()][origine.getColonne()] == Jeton.VIDE) {
+		if (othellier[origine.getLigne()][origine.getColonne()] == Jeton.VIDE) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					if (x != 0 || y != 0) {
-						Coup check = parcourirDroite(origine, x, y, true);
+						Coup check = parcourirDroite(origine, x, y);
 						if (check != null) {
 							Coup checkRetournement = new Coup(
 									origine.getLigne(), origine.getColonne(),
@@ -295,7 +259,7 @@ public class Plateau {
 										checkRetournement.getLigne() + x,
 										checkRetournement.getColonne() + y,
 										origine.getCouleur());
-								othellierSurcharge[checkRetournement.getLigne()][checkRetournement
+								othellier[checkRetournement.getLigne()][checkRetournement
 										.getColonne()] = origine.getCouleur();
 								// this.setPlateau(checkRetournement.getLigne(),
 								// checkRetournement.getColonne(),
@@ -324,14 +288,5 @@ public class Plateau {
 			}
 		}
 		return true;
-	}
-
-	public Plateau copiePlateau() {
-		Plateau result = new Plateau();
-		result.othellier = this.othellier;
-		result.othellierSurcharge = this.othellierSurcharge;
-		result.coupsPossible = this.coupsPossible;
-		
-		return result;
 	}
 }
