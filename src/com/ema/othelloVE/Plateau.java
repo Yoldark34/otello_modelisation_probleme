@@ -1,7 +1,6 @@
 package com.ema.othelloVE;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.util.Log;
@@ -12,7 +11,6 @@ public class Plateau {
 	private static final int NUM_LIGNES = 8;
 	/** othellier[ligne][colonne] */
 	private byte[][] othellier;
-	private List<Coup> coupsPossible = new ArrayList<Coup>(); //coups possibles
 	private static int[][] tabPonderation = {{7, 3, 6, 6, 6, 6, 3, 7}, {6, 3, 4, 4, 4, 4, 3, 6}, {3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, 
 											{3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, {6, 3, 4, 4, 4, 4, 3, 6}, {7, 3, 6, 6, 6, 6, 3, 7}} ;
 	
@@ -58,34 +56,7 @@ public class Plateau {
 	}
 
 	public void setPlateau(int i, int j, byte couleur) {
-		manageCoupsPossible(new Coup(i, j, couleur));
 		this.othellier[i][j] = couleur;
-	}
-
-	private void manageCoupsPossible(Coup coup) {
-		// Parcours de la liste de coup initialisé avec une couleur VIDE
-		Log.v("manageCoupsPossibles", "Gestion de " + coup.getLigne() + "," + coup.getColonne());
-		for (Coup c : getCaseProche(coup)) {
-			if (!existeDansCoupPossible(c, false)) {
-				Log.v("manageCoupsPossibles", "Ajout de " + c.getLigne() + "," + c.getColonne());
-				coupsPossible.add(c);
-				
-			}
-		}
-		// Si le coup était dans la liste, on le sort
-		existeDansCoupPossible(new Coup(coup.getLigne(), coup.getColonne(), Jeton.VIDE), true);
-	}
-
-	private boolean existeDansCoupPossible(Coup coup, boolean suppress) {
-		for (Coup c : coupsPossible) {
-			if (c.getLigne() == coup.getLigne() && c.getColonne() == coup.getColonne()) {
-				if (suppress) {
-					coupsPossible.remove(c);
-				}
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static int getNbLignes() {
@@ -204,26 +175,6 @@ public class Plateau {
 		return coupResult;
 	}
 
-	private List<Coup> getCaseProche(Coup origine) {
-		byte[][] othellierParcours = othellier;
-		List<Coup> toReturn = new ArrayList<Coup>();
-		for (int x = -1; x <= 1; x++) {
-			for (int y = -1; y <= 1; y++) {
-				if (x != 0 || y != 0) {
-					Coup check = new Coup(origine.getLigne() + x, origine.getColonne() + y, origine.getCouleur());
-					if (check.getColonne() >= 0	&& check.getColonne() < NUM_LIGNES 
-							&& check.getLigne() >= 0 && check.getLigne() < NUM_LIGNES) {
-						// La case est vide
-						if (othellierParcours[check.getLigne()][check.getColonne()] == Jeton.VIDE) {
-							toReturn.add(new Coup(check.getLigne(), check.getColonne(), Jeton.VIDE));
-						}
-					}
-				}
-			}
-		}
-		return toReturn;
-	}
-
 	/**
 	 * Retourne les coups possibles pour un joueur donné
 	 * 
@@ -232,10 +183,15 @@ public class Plateau {
 	 */
 	public List<Coup> getMouvementPossible(byte couleur) {
 		List<Coup> toReturn = new ArrayList<Coup>();
-		for (Coup c : coupsPossible) {
-			if (isCoupValide(new Coup(c.getLigne(), c.getColonne(), couleur), false)) {
-				toReturn.add(new Coup(c.getLigne(), c.getColonne(), couleur));
-			}
+		 // Parcours de toute la grille
+		for (int x=0;x<NUM_LIGNES;x++) {
+		 	for (int y=0;y<NUM_LIGNES;y++) {
+		 		Coup test = new Coup(x, y, couleur);
+		 				// Si le coup est valide on l'ajoute
+		 			if (isCoupValide(test, false)) {
+		 				toReturn.add(test);
+		 			}
+		 	}
 		}
 		return toReturn;
 	}
