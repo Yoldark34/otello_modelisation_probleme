@@ -11,10 +11,12 @@ public class Plateau {
 	private static final int NUM_LIGNES = 8;
 	/** othellier[ligne][colonne] */
 	private byte[][] othellier;
-	private static int[][] tabPonderation = {{7, 3, 6, 6, 6, 6, 3, 7}, {6, 3, 4, 4, 4, 4, 3, 6}, {3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, 
-											{3, 3, 3, 3, 3, 3, 3, 3}, {3, 3, 3, 3, 3, 3, 3, 3}, {6, 3, 4, 4, 4, 4, 3, 6}, {7, 3, 6, 6, 6, 6, 3, 7}} ;
-	
-	
+	private static int[] patern1 = { 80, 3, 30, 30, 30, 30, 3, 80 };
+	private static int[] patern2 = { 30, 3, 15, 15, 15, 15, 3, 30 };
+	private static int[] patern3 = { 3, 3, 3, 3, 3, 3, 3, 3 };
+	private static int[][] tabPonderation = { patern1, patern2, patern3, patern3,
+		patern3, patern3, patern2, patern1 };
+
 	public static int getPonderation(int ligne, int colonne) {
 		return Plateau.tabPonderation[ligne][colonne];
 	}
@@ -22,17 +24,17 @@ public class Plateau {
 	public Plateau() {
 		othellier = new byte[NUM_LIGNES][NUM_LIGNES];
 	}
-	
+
 	public Plateau(Plateau plateau) {
 		othellier = new byte[NUM_LIGNES][NUM_LIGNES];
-		
+
 		for (int i = 0; i < NUM_LIGNES; i++) {
 			for (int j = 0; j < NUM_LIGNES; j++) {
 				othellier[i][j] = new Byte(plateau.othellier[i][j]);
 			}
 		}
 	}
-	
+
 	public void setPlateau(byte[][] othellier) {
 		for (int i = 0; i < NUM_LIGNES; i++) {
 			for (int j = 0; j < NUM_LIGNES; j++) {
@@ -93,36 +95,33 @@ public class Plateau {
 	 */
 	public boolean isCoupValide(Coup origine, boolean retourner) {
 		boolean valide = false;
+		boolean stop = false;
+		int x = -1;
+		int y = -1;
 		if (othellier[origine.getLigne()][origine.getColonne()] == Jeton.VIDE) {
-			for (int x = -1; x <= 1; x++) {
-				for (int y = -1; y <= 1; y++) {
-					if (x != 0 || y != 0) {
-						Coup check = parcourirDroite(origine, x, y);
-						if (check != null) {
-							valide = true;
-							if (retourner) {
-								Coup checkRetournement = new Coup(
-										origine.getLigne(),
-										origine.getColonne(),
-										origine.getCouleur());
-								while (check.getLigne() != checkRetournement
-										.getLigne()
-										|| check.getColonne() != checkRetournement
-												.getColonne()) {
-									checkRetournement = new Coup(
-											checkRetournement.getLigne() + x,
-											checkRetournement.getColonne() + y,
-											origine.getCouleur());
-									othellier[checkRetournement
-											.getLigne()][checkRetournement
-											.getColonne()] = origine
-											.getCouleur();
-								}
+			while (x <= 1 && y <= 1 && !stop) {
+				if (x != 0 || y != 0) {
+					Coup check = parcourirDroite(origine, x, y);
+					if (check != null) {
+						valide = true;
+						if (retourner) {
+							Coup checkRetournement = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
+							while (check.getLigne() != checkRetournement.getLigne() || check.getColonne() != checkRetournement.getColonne()) {
+								checkRetournement = new Coup(checkRetournement.getLigne() + x, checkRetournement.getColonne() + y, origine.getCouleur());
+								othellier[checkRetournement.getLigne()][checkRetournement.getColonne()] = origine.getCouleur();
 							}
+						} else {
+							stop = true;
 						}
 					}
 				}
+				x++;
+				if (x > 1 && y < 1) {
+					y++;
+					x = -1; 
+				}
 			}
+			
 		}
 		return valide;
 	}
@@ -141,23 +140,18 @@ public class Plateau {
 	private Coup parcourirDroite(Coup origine, int coeffX, int coeffY) {
 		boolean parcours = true;
 		Coup coupResult = null;
-		Coup check = new Coup(origine.getLigne(), origine.getColonne(),
-				origine.getCouleur());
+		Coup check = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
 		int distance = 0;
 		while (parcours) {
 			distance++;
-			check = new Coup(check.getLigne() + coeffX, check.getColonne()
-					+ coeffY, origine.getCouleur());
+			check = new Coup(check.getLigne() + coeffX, check.getColonne() + coeffY, origine.getCouleur());
 			// Test si le pion est dans le plateau
-			parcours = check.getColonne() >= 0
-					&& check.getColonne() < NUM_LIGNES && check.getLigne() >= 0
-					&& check.getLigne() < NUM_LIGNES;
+			parcours = check.getColonne() >= 0 && check.getColonne() < NUM_LIGNES && check.getLigne() >= 0 && check.getLigne() < NUM_LIGNES;
 			if (parcours) {
 				// Il y a quelque chose sur la case
 				if (othellier[check.getLigne()][check.getColonne()] != Jeton.VIDE) {
 					// Jeton de couleur identique de l'origine
-					if (origine.getCouleur() == othellier[check
-							.getLigne()][check.getColonne()]) {
+					if (origine.getCouleur() == othellier[check.getLigne()][check.getColonne()]) {
 						// Test si la distance est plus grande que 1
 						if (distance == 1) {
 							parcours = false;
@@ -183,15 +177,15 @@ public class Plateau {
 	 */
 	public List<Coup> getMouvementPossible(byte couleur) {
 		List<Coup> toReturn = new ArrayList<Coup>();
-		 // Parcours de toute la grille
-		for (int x=0;x<NUM_LIGNES;x++) {
-		 	for (int y=0;y<NUM_LIGNES;y++) {
-		 		Coup test = new Coup(x, y, couleur);
-		 				// Si le coup est valide on l'ajoute
-		 			if (isCoupValide(test, false)) {
-		 				toReturn.add(test);
-		 			}
-		 	}
+		// Parcours de toute la grille
+		for (int x = 0; x < NUM_LIGNES; x++) {
+			for (int y = 0; y < NUM_LIGNES; y++) {
+				Coup test = new Coup(x, y, couleur);
+				// Si le coup est valide on l'ajoute
+				if (isCoupValide(test, false)) {
+					toReturn.add(test);
+				}
+			}
 		}
 		return toReturn;
 	}
@@ -204,19 +198,10 @@ public class Plateau {
 					if (x != 0 || y != 0) {
 						Coup check = parcourirDroite(origine, x, y);
 						if (check != null) {
-							Coup checkRetournement = new Coup(
-									origine.getLigne(), origine.getColonne(),
-									origine.getCouleur());
-							while (check.getLigne() != checkRetournement
-									.getLigne()
-									|| check.getColonne() != checkRetournement
-											.getColonne()) {
-								checkRetournement = new Coup(
-										checkRetournement.getLigne() + x,
-										checkRetournement.getColonne() + y,
-										origine.getCouleur());
-								othellier[checkRetournement.getLigne()][checkRetournement
-										.getColonne()] = origine.getCouleur();
+							Coup checkRetournement = new Coup(origine.getLigne(), origine.getColonne(), origine.getCouleur());
+							while (check.getLigne() != checkRetournement.getLigne() || check.getColonne() != checkRetournement.getColonne()) {
+								checkRetournement = new Coup(checkRetournement.getLigne() + x, checkRetournement.getColonne() + y, origine.getCouleur());
+								othellier[checkRetournement.getLigne()][checkRetournement.getColonne()] = origine.getCouleur();
 								// this.setPlateau(checkRetournement.getLigne(),
 								// checkRetournement.getColonne(),
 								// origine.getCouleur());

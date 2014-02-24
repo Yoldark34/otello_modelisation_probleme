@@ -123,9 +123,8 @@ public class Algo {
 				val = Integer.MAX_VALUE;
 				
 				for (int i = 0; i < arbre.getNbFils(); i++) {
-					Node fils = arbre.getFils(i);
 					
-					val = Math.min(val, alphaBeta(fils, alpha, beta));
+					val = Math.min(val, alphaBeta(arbre.getFils(i), alpha, beta));
 					if (alpha >= val) {
 						/* coupure alpha */
 						return val;
@@ -135,9 +134,8 @@ public class Algo {
 			} else {
 				val = Integer.MIN_VALUE;
 				for (int i = 0; i < arbre.getNbFils(); i++) {
-					Node fils = arbre.getFils(i);
 					
-					val = Math.max(val, alphaBeta(fils, alpha, beta));
+					val = Math.max(val, alphaBeta(arbre.getFils(i), alpha, beta));
 					if (val >= beta) {
 						/* coupure beta */
 						return val;

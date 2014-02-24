@@ -24,6 +24,7 @@ public class Node {
 	public Node(Plateau plateau, Coup coup, byte couleur, boolean type, int profondeur, Node pere) {
 		this.plateau = new Plateau(plateau);
 		
+		this.heuristique = 0;
 		int nbRetournement = 0;
 		int supplement = 0;
 		if (coup != null) {
@@ -33,7 +34,7 @@ public class Node {
 		}
 		
 		this.heuristique = nbRetournement + supplement;
-		
+	
 		this.couleur = couleur;
 		this.profondeur = profondeur;
 		this.coups = this.plateau.getMouvementPossible(this.getCouleurAdverse());

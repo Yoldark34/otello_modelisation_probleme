@@ -121,7 +121,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 			//le coup de l'IA
 			coupTemp = coupsPossible.get(i);
 			
-			Node node = new Node(plateau, coupTemp, this.getCouleur(), Node.MIN, profondeur, null);
+			Node node = new Node(plateau, coupTemp, this.getCouleur(), Node.MAX, profondeur, null);
 		
 			//nombre de retournement en jouant ce coup
 			//nbRetournement = plateau.getRetournementPossibleEnRetournant(coupTemp);
@@ -185,7 +185,7 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}*/
 
 	private Coup calculCoupExpert() {
-		return this.calculMinCoupAdversaire(3);
+		return this.calculMinCoupAdversaire(2);
 
 	}
 
