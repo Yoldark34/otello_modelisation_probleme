@@ -20,7 +20,7 @@ public class ControleurJeu implements Runnable {
 
 	private final String TAG = ControleurJeu.class.getSimpleName();
 	private boolean fin = false;
-	
+
 	public ControleurJeu(int level) {
 		niveauIA = level;
 		plateau = new Plateau();
@@ -227,14 +227,16 @@ public class ControleurJeu implements Runnable {
 		} else {
 			joueurEnCours = joueur1;
 		}
-		if (plateau.isFull()) {
+		if (plateau.isFull()
+				|| (plateau.getMouvementPossible(joueur1.couleur).isEmpty() 
+						&& plateau.getMouvementPossible(joueur2.couleur).isEmpty())) {
 			fin = true;
 		}
-		// Change de joueur si le nouveau joueu ne peux rien faire
+		// Change de joueur si le nouveau joueur ne peux rien faire
 		else if (plateau.getMouvementPossible(joueurEnCours.couleur).isEmpty()) {
 			changeJoueurEnCours();
 		}
-		
+
 	}
 
 	public void publishEvent(MyEvent event) {
