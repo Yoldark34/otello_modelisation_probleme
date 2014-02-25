@@ -11,102 +11,36 @@ package com.ema.arbre;
  * @author Admin
  */
 public class Algo {
-	/**
-	 * @param args the command line arguments
-	 */
-	/*public static void main(String[] args) {
-		ArbreNAire<Integer> arbre = createArbre(3,2);
-		depthSearch(arbre);
-		arbre.goToRacine();
-		minMax(arbre, 2);
-	}*/
-	
-	/*private static ArbreNAire<Integer> createArbre(int largeur, int profondeur) {
-		ArbreNAire<Integer> arbre = new ArbreNAire<Integer>(1);
-		createArbre(arbre, largeur, profondeur);
-		arbre.goToRacine();
-		return arbre;
-	}
-	
-	private static void createArbre(ArbreNAire<Integer> arbre, int largeur, int profondeur) {
-		if (profondeur > 0) {
-			for (int i = 0; i < largeur; i++) {
-				int number = arbre.getItem() * 10 + i;
-				arbre.addFils(arbre.getItem() * 10 + i);
-				
-				arbre.goToFils(i);
-				arbre.setHeuristique(number);
-				createArbre(arbre, largeur, profondeur - 1);
-				arbre.goToPere();
-			}
-		}
-	}
-	
-	public static void depthSearch(ArbreNAire<Integer> arbre) {
-		if (!arbre.isRacine()) {
-			System.out.println(" - ");
-		}
-		for (int i = 0; i < arbre.getNbFils(); i++) {
-			arbre.goToFils(i);
-			System.out.println(arbre.getItem() + " ( " + arbre.getHeuristique() + " ) ");
-			depthSearch(arbre);
-			arbre.goToPere();
-		}
-	}
-	
-	public static ArrayList<Integer> minMax(ArbreNAire<Integer> arbre, int profondeur) {
-		ArrayList<Integer> toReturn = new ArrayList<Integer>();
-		toReturn.add(0);
-		boolean minMax=true; // max = true
-		int max = -1;
-		int maxHeuristiqueItem = -1;
-		for (int i=0;i<arbre.getNbFils(); i++) {
-			arbre.goToFils(i);
-			ArrayList<Integer> result = minMax(arbre, profondeur-1, !minMax);
-			if (max == -1 || max < arbre.getHeuristique() - result.get(1)) {
-				max = arbre.getHeuristique() - result.get(1);
-				maxHeuristiqueItem = i;
-				toReturn.set(0, i);
-			}
-			arbre.goToPere();
-		}
-		toReturn.add(max);
-		arbre.goToFils(maxHeuristiqueItem);
-		return toReturn;
-	}
-	
-	private static ArrayList<Integer> minMax(ArbreNAire<Integer> arbre, int profondeur, boolean minMax) {
-		ArrayList<Integer> toReturn = new ArrayList<Integer>(); // 0 : index / 1 : heuristique
-		toReturn.add(0);
-		if (profondeur > 0 && arbre.getNbFils() > 0) {
+
+	public static Integer minMax(Node arbre) {
+		int val;
+
+		if (!arbre.isNoeudFeuille()) {
 			int min = -1;
 			int max = -1;
+			boolean first = true;
 			for (int i=0; i < arbre.getNbFils(); i++) {
-				arbre.goToFils(i);
-				ArrayList<Integer> result = minMax(arbre, profondeur-1, !minMax);
-				if (max == -1 || (minMax == true && arbre.getHeuristique() - result.get(1) > max)) { // Traitement Max
-					max = arbre.getHeuristique() - result.get(1);
-					toReturn.set(0, i);
+				val = minMax(arbre.getFils(i));
+				if (first || (arbre.getType() == Node.MAX && arbre.getHeuristique() - val > max)) { // Traitement Max
+					max = arbre.getHeuristique() - val;
 				}
-				if (min == -1 || (minMax == false && arbre.getHeuristique() + result.get(1) < min)) { // Traitement Min
-					min = arbre.getHeuristique() + result.get(1);
-					toReturn.set(0, i);
+				if (first || (arbre.getType() == Node.MIN && arbre.getHeuristique() + val < min)) { // Traitement Min
+					min = arbre.getHeuristique() + val;
 				}
-				
-				arbre.goToPere();
+				first = false;
 			}
-			if (minMax == false) {
-				toReturn.add(min);
+			if (arbre.getType() == Node.MIN) {
+				val = min;
 			} else {
-				toReturn.add(max);
+				val = max;
 			}
 			
 		}
 		else {
-			toReturn.add(arbre.getHeuristique()	);
+			val = arbre.getHeuristique();
 		}
-		return toReturn;
-	}*/
+		return val;
+	}
 	
 	public static int alphaBeta(Node arbre) {
 		return alphaBeta(arbre, Integer.MIN_VALUE, Integer.MAX_VALUE);

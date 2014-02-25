@@ -6,7 +6,6 @@ import java.util.Random;
 
 import android.os.AsyncTask;
 
-import com.ema.arbre.ArbreNAire;
 import com.ema.arbre.Node;
 import com.ema.arbre.Algo;
 
@@ -106,86 +105,40 @@ public class JoueurIA extends Joueur implements JoueurIAAction {
 	}
 
 	private Coup calculCoupMoyen() {
-		return this.calculMinCoupAdversaire(1);
+		return this.calculMinCoupAdversaire(1, true);
 	}
 	
-	private Coup calculMinCoupAdversaire(int profondeur) {
+	private Coup calculMinCoupAdversaire(int profondeur, boolean minMax) {
 		List<Coup> coupsPossible = plateau.getMouvementPossible(this.getCouleur());
 		Coup coupTemp;
 		int maxi = Integer.MIN_VALUE;
 		int maxIndex = -1;
 		
 		for (int i = 0; i < coupsPossible.size(); i++) {
-			//arbre.addFils(arbre.getItem() * 10 + i);
-			//arbre.goToFils(i);
-			//le coup de l'IA
 			coupTemp = coupsPossible.get(i);
 			
 			Node node = new Node(plateau, coupTemp, this.getCouleur(), Node.MAX, profondeur, null);
 		
-			//nombre de retournement en jouant ce coup
-			//nbRetournement = plateau.getRetournementPossibleEnRetournant(coupTemp);
+			int heuristique = 0;
 			
-			//on place le jeton sur la surcharge
-			/*plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), this.getCouleur());
-			
-			//arbre.setHeuristique(nbRetournement+tabPonderation[coupTemp.getLigne()][coupTemp.getColonne()]);
-			arbre.setPlateau(plateau);
-			arbre.setCouleur(this.getCouleur());
-			arbre.setProfondeur(profondeur);
-			arbre.setMin(false);*/
-			
-			//this.createChildTree(plateau, arbre, getCouleurAdverse(this.getCouleur()), profondeur-1);
-			
-			int heuristique = Algo.alphaBeta(node);
+			if (minMax) {
+				heuristique = Algo.minMax(node);
+			} else {
+				heuristique = Algo.alphaBeta(node);
+			}
 			
 			if (heuristique > maxi) {
 				maxIndex = i;
 				maxi = heuristique;
 			}
-			
-			//arbre.goToPere();
+
 		}
-		//arbre.goToRacine();
-		//main.depthSearch(arbre);
-		//ArrayList<Integer> resultMinMax = main.minMax(arbre, profondeur);
 		
 		return coupsPossible.get(maxIndex);
 	}
-	
-	/*private ArbreNAire<Integer> createChildTree(Plateau plateau, ArbreNAire<Integer> arbre, byte couleur, int profondeur) {
-		byte[][] surchargeSav = plateau.cloneSurcharge();
-		int nbCoups = plateau.getMouvementPossible(couleur, true).size();
-		Coup coupTemp;
-		int nbRetournement;
-		
-		for (int i = 0; i < nbCoups; i++) {
-			plateau.setSurcharge(surchargeSav);
-			arbre.addFils(arbre.getItem() * 10 + i);
-			arbre.goToFils(i);
-			//le coup de l'IA
-			coupTemp = plateau.getMouvementPossible(couleur, true).get(i);
-		
-			//nombre de retournement en jouant ce coup
-			nbRetournement = plateau.getRetournementPossibleEnRetournant(coupTemp);
-			
-			//on place le jeton sur la surcharge
-			plateau.setSurchargePlateau(coupTemp.getLigne(), coupTemp.getColonne(), couleur);
-			
-			arbre.setHeuristique(nbRetournement);
-			
-			if (profondeur > 1) {
-				this.createChildTree(plateau, arbre, getCouleurAdverse(couleur), profondeur-1);
-			}
-			
-			arbre.goToPere();
-		}
-		
-		return arbre;
-	}*/
 
 	private Coup calculCoupExpert() {
-		return this.calculMinCoupAdversaire(2);
+		return this.calculMinCoupAdversaire(3, false);
 
 	}
 
