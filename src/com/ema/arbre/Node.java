@@ -28,7 +28,7 @@ public class Node {
 		int nbRetournement = 0;
 		int supplement = 0;
 		if (coup != null) {
-			nbRetournement = this.plateau.getRetournementPossibleEnRetournant(coup);
+			nbRetournement = this.plateau.getRetournementPossibleEnRetournant(coup.getColonne(), coup.getColonne(), coup.getCouleur());
 			this.plateau.setPlateau(coup.getLigne(), coup.getColonne(), couleur);
 			supplement = Plateau.getPonderation(coup.getLigne(), coup.getColonne());
 		}

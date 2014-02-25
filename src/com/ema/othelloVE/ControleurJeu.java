@@ -129,8 +129,8 @@ public class ControleurJeu implements Runnable {
 			synchronized (events) {
 				if (event instanceof MyEventMotion) {
 					MyEventMotion myEventMotion = (MyEventMotion) event;
-					if (plateau.isCoupValide(new Coup(myEventMotion.x,
-							myEventMotion.y, joueurEnCours.getCouleur()), true)) {
+					if (plateau.isCoupValide(myEventMotion.x,
+							myEventMotion.y, joueurEnCours.getCouleur(), true)) {
 						Log.i("Coup", "Valide");
 
 						if (!iaReflechi) {
@@ -156,10 +156,9 @@ public class ControleurJeu implements Runnable {
 					}
 				} else if (event instanceof MyEventCoupIA) {
 					MyEventCoupIA myEventunCoup = (MyEventCoupIA) event;
-					if (plateau.isCoupValide(
-							new Coup(myEventunCoup.coup.getLigne(),
+					if (plateau.isCoupValide(myEventunCoup.coup.getLigne(),
 									myEventunCoup.coup.getColonne(),
-									joueurEnCours.getCouleur()), true)) {
+									joueurEnCours.getCouleur(), true)) {
 						Log.i("Coup", "Valide");
 
 						iaReflechi = false;

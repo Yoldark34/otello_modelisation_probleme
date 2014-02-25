@@ -99,9 +99,9 @@ public class IhmPlateau extends View {
 						y = (j * tailleGrille) + tailleGrille / 2;
 						afficheJeton(aCanvas, x, y, jeton, true);
 					}
-					else if (jeton == Jeton.VIDE && othellier.isCoupValide(new Coup(i,j,couleurJoueurEnCours), false)) {
+					/*else if (jeton == Jeton.VIDE && othellier.isCoupValide(i,j,couleurJoueurEnCours, false)) {
 						afficheJeton(aCanvas, (i * tailleGrille) + tailleGrille / 2, (j * tailleGrille) + tailleGrille / 2, couleurJoueurEnCours, false);
-					}
+					}*/
 				}
 			}
 		}
