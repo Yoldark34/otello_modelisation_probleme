@@ -21,11 +21,11 @@ public class Algo {
 			boolean first = true;
 			for (int i=0; i < arbre.getNbFils(); i++) {
 				val = minMax(arbre.getFils(i));
-				if (first || (arbre.getType() == Node.MAX && arbre.getHeuristique() - val > max)) { // Traitement Max
-					max = arbre.getHeuristique() - val;
+				if (first || (arbre.getType() == Node.MAX && val > max)) { // Traitement Max
+					max = val;
 				}
-				if (first || (arbre.getType() == Node.MIN && arbre.getHeuristique() + val < min)) { // Traitement Min
-					min = arbre.getHeuristique() + val;
+				if (first || (arbre.getType() == Node.MIN && 	val < min)) { // Traitement Min
+					min = val;
 				}
 				first = false;
 			}

@@ -23,17 +23,11 @@ public class Node {
 
 	public Node(Plateau plateau, Coup coup, byte couleur, boolean type, int profondeur, Node pere) {
 		this.plateau = new Plateau(plateau);
-		
-		this.heuristique = 0;
-		int nbRetournement = 0;
-		int supplement = 0;
+
 		if (coup != null) {
-			nbRetournement = this.plateau.getRetournementPossibleEnRetournant(coup.getColonne(), coup.getColonne(), coup.getCouleur());
+			this.plateau.getRetournementPossibleEnRetournant(coup.getColonne(), coup.getColonne(), coup.getCouleur());
 			this.plateau.setPlateau(coup.getLigne(), coup.getColonne(), couleur);
-			supplement = Plateau.getPonderation(coup.getLigne(), coup.getColonne());
 		}
-		
-		this.heuristique = nbRetournement + supplement;
 	
 		this.couleur = couleur;
 		this.profondeur = profondeur;
@@ -87,10 +81,16 @@ public class Node {
 		this.profondeur = profondeur;
 	}
 	public int getHeuristique() {
-		return heuristique;
-	}
-	public void setHeuristique(int heuristique) {
-		this.heuristique = heuristique;
+		List<Integer> pions = plateau.comptePionsAvecPonderation();
+		
+		int result = pions.get(0)-pions.get(1);
+		
+		if (this.couleur == Jeton.BLANC) {
+			result = pions.get(1)-pions.get(0);
+		}
+		
+		
+		return result;
 	}
 	
 	private byte getCouleurAdverse() {

@@ -11,9 +11,9 @@ public class Plateau {
 	private static final int NUM_LIGNES = 8;
 	/** othellier[ligne][colonne] */
 	private byte[][] othellier;
-	private static int[] patern1 = { 7, 1, 5, 5, 5, 5, 1, 7 };
-	private static int[] patern2 = { 1, 1, 2, 2, 2, 2, 1, 1 };
-	private static int[] patern3 = { 5, 1, 6, 6, 6, 6, 1, 5 };
+	private static int[] patern1 = { 2000, -2000, 20, 20, 20, 20, -2000, 2000 };
+	private static int[] patern2 = { -2000, -2000, 2, 2, 2, 2, -2000, -2000 };
+	private static int[] patern3 = { 20, 1, 6, 6, 6, 6, 1, 20 };
 	private static int[][] tabPonderation = { patern1, patern2, patern3, patern3,
 		patern3, patern3, patern2, patern1 };
 
@@ -185,11 +185,41 @@ public class Plateau {
 		for (int x = 0; x < NUM_LIGNES; x++) {
 			for (int y = 0; y < NUM_LIGNES; y++) {
 				// Si le coup est valide on l'ajoute
-				if (isCoupValide(x, y, couleur, false)) {
-					toReturn.add(new Coup(x, y, couleur));
+				if (othellier[x][y] == Jeton.VIDE) {
+					//La verifiction en amont pour la couleur du jeton evite une permutation de contexte inutile et
+					//est plus rapide.
+					if (isCoupValide(x, y, couleur, false)) {
+						toReturn.add(new Coup(x, y, couleur));
+					}
 				}
 			}
 		}
+		return toReturn;
+	}
+	
+	/**
+	 * 
+	 * @return array (0 noir, 1 blanc)
+	 */
+	public List<Integer> comptePionsAvecPonderation() {
+		List<Integer> toReturn = new ArrayList<Integer>();
+		int noir = 0;
+		int blanc = 0;
+		// Parcours de toute la grille
+		for (int x = 0; x < NUM_LIGNES; x++) {
+			for (int y = 0; y < NUM_LIGNES; y++) {				
+				if (othellier[x][y] != Jeton.VIDE) {
+					if (othellier[x][y] == Jeton.BLANC) {
+						blanc += getPonderation(x, y);
+					} else {
+						noir += getPonderation(x, y);
+					}
+				}
+			}
+		}
+		toReturn.add(noir);
+		toReturn.add(blanc);
+		
 		return toReturn;
 	}
 
